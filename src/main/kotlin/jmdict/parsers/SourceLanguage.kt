@@ -2,6 +2,7 @@ package jmdict.parsers
 
 import jmdict.datatypes.SourceLanguageElement
 import org.w3c.dom.Element
+import xmlreader.Tag
 
 object SourceLanguage {
 
@@ -11,7 +12,7 @@ object SourceLanguage {
         const val WASEIEIGO = "ls_wasei"
     }
 
-    fun parse(element: Element) =
+    fun parse(element: Tag) =
         SourceLanguageElement(
             language = language(element),
             information = information(element),
@@ -19,16 +20,12 @@ object SourceLanguage {
             waseiEigo = waseiEigo(element)
         )
 
-    private fun language(element: Element) =
-        if (element.hasAttribute(Attribute.LANGUAGE))
-            element.getAttribute(Attribute.LANGUAGE)
-        else
-            "eng"
+    private fun language(element: Tag) =
+        element.properties().getOrDefault(Attribute.LANGUAGE, "eng")
 
-    private fun information(element: Element) =
-        element.textContent.ifBlank { null }
+    private fun information(element: Tag) = element.text().ifBlank { null }
 
-    private fun partial(element: Element) = element.hasAttribute(Attribute.PARTIAL)
+    private fun partial(element: Tag) = element.properties().containsKey(Attribute.PARTIAL)
 
-    private fun waseiEigo(element: Element) = element.hasAttribute(Attribute.WASEIEIGO)
+    private fun waseiEigo(element: Tag) = element.properties().containsKey(Attribute.WASEIEIGO)
 }

@@ -5,9 +5,7 @@ import jmdict.datatypes.ReadingElement
 import jmdict.datatypes.SenseElement
 import jmdict.enums.EntryElement
 import jmdict.exceptions.MissingFieldException
-import jmdict.first
-import jmdict.map
-import org.w3c.dom.Element
+import xmlreader.Tag
 
 object Entry {
     const val ENTRY_SEQUENCE = "ent_seq"
@@ -15,7 +13,7 @@ object Entry {
     const val READING_ELEMENT = "r_ele"
     const val SENSE = "sense"
 
-    fun parse(element: Element): EntryElement =
+    fun parse(element: Tag): EntryElement =
         EntryElement(
             entrySequence = sequence(element),
             kanjiElement = kanji(element),
@@ -23,15 +21,15 @@ object Entry {
             senseElement = sense(element)
         )
 
-    private fun sequence(element: Element): Int =
-        element.getElementsByTagName(ENTRY_SEQUENCE).first()?.textContent?.toInt() ?: throw MissingFieldException(ENTRY_SEQUENCE)
+    private fun sequence(element: Tag): Int =
+        element.childrenWithTagName(ENTRY_SEQUENCE).firstOrNull()?.text()?.toInt() ?: throw MissingFieldException(ENTRY_SEQUENCE)
 
-    private fun kanji(element: Element): List<KanjiElement>? =
-        element.getElementsByTagName(KANJI_ELEMENT).map { Kanji.parse(it as Element) }.ifEmpty { null }
+    private fun kanji(element: Tag): List<KanjiElement>? =
+        element.childrenWithTagName(KANJI_ELEMENT).map { Kanji.parse(it) }.ifEmpty { null }
 
-    private fun reading(element: Element): List<ReadingElement> =
-        element.getElementsByTagName(READING_ELEMENT).map { Reading.parse(it as Element) }
+    private fun reading(element: Tag): List<ReadingElement> =
+        element.childrenWithTagName(READING_ELEMENT).map { Reading.parse(it) }
 
-    private fun sense(element: Element): List<SenseElement> =
-        element.getElementsByTagName(SENSE).map { Sense.parse(it as Element) }
+    private fun sense(element: Tag): List<SenseElement> =
+        element.childrenWithTagName(SENSE).map { Sense.parse(it) }
 }

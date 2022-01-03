@@ -1,8 +1,7 @@
 package jmdict.parsers
 
 import jmdict.datatypes.GlossElement
-import jmdict.map
-import org.w3c.dom.Element
+import xmlreader.Tag
 
 object Gloss {
     private object Attribute {
@@ -12,32 +11,27 @@ object Gloss {
     }
     private const val PRIORITY = "pri"
 
-    fun parse(element: Element) =
+    fun parse(element: Tag) =
         GlossElement(
+            element = text(element),
             language = language(element),
             gender = gender(element),
             type = type(element),
             priority = priority(element),
         )
 
-    private fun language(element: Element) =
-        if (element.hasAttribute(Attribute.LANGUAGE))
-            element.getAttribute(Attribute.LANGUAGE)
-        else
-            "eng"
+    private fun language(element: Tag) =
+        Language.fromCode(element.properties().getOrDefault(Attribute.LANGUAGE, Language.ENGLISH.code))
 
-    private fun gender(element: Element) =
-        if (element.hasAttribute(Attribute.GENDER))
-            element.getAttribute(Attribute.GENDER)
-        else
-            null
+    private fun gender(element: Tag) =
+        element.properties()[Attribute.GENDER]
 
-    private fun type(element: Element) =
-        if (element.hasAttribute(Attribute.GENDER))
-            element.getAttribute(Attribute.GENDER)
-        else
-            null
+    private fun type(element: Tag) =
+        element.properties()[Attribute.TYPE]
 
-    private fun priority(element: Element) =
-        element.getElementsByTagName(PRIORITY).map { it.textContent }.ifEmpty { null }
+    private fun text(element: Tag) =
+        element.text()
+
+    private fun priority(element: Tag) =
+        element.childrenWithTagName(PRIORITY).map { it.text() }.ifEmpty { null }
 }

@@ -1,39 +1,29 @@
 package jmdict
 
+import Language
+import jmdict.datatypes.SenseElement
 import jmdict.enums.EntryElement
 import jmdict.parsers.Entry
 import jmdict.parsers.Reading
 import jmdict.parsers.Sense
 import loader.Loader
-import org.w3c.dom.Element
-import org.xml.sax.InputSource
-import java.io.File
-import java.io.StringReader
-import javax.xml.parsers.DocumentBuilderFactory
+import xmlreader.impl.TagImpl
 
 class Dictionary(
     loader: Loader
 ) {
-    private val entry: List<EntryElement>
+    private val entries: List<EntryElement>
     private val entryByIndex: MutableMap<Int, EntryElement> = mutableMapOf()
     private val entryByHeadWord: MutableMap<String, MutableList<EntryElement>> = mutableMapOf()
 
     init {
-        val xmlFile = File(loader.path())
-        val xmlInput = InputSource(StringReader(xmlFile.readText()))
-        val root = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlInput).getElementsByTagName("JMdict").first()
+        val root = TagImpl(loader, "JMdict")
 
-        entry = root!!.childNodes.map {
-            val element = it as? Element
+        entries = root.children().map {
+            Entry.parse(it)
+        }
 
-            if (element == null) {
-                null
-            } else {
-                Entry.parse(element)
-            }
-        }.filterNotNull()
-
-        entry.forEach {
+        entries.forEach {
             entryByIndex[it.entrySequence] = it
 
             val headWord = headWord(it)
@@ -44,7 +34,7 @@ class Dictionary(
             }
         }
 
-        entry.forEach {
+        entries.forEach {
             postProcess(it, this)
         }
     }
@@ -52,6 +42,31 @@ class Dictionary(
     fun entry(headWord: String) = entryByHeadWord[headWord]
 
     fun entries() = entryByHeadWord.keys
+
+    private fun getBaseWord(word: String) =
+        word.replace("\\([^)]*\\)".toRegex(), "")
+
+    fun nonJapaneseHeadwords(language: Language): Map<String, List<SenseElement>> {
+        val result = mutableMapOf<String, MutableList<SenseElement>>()
+
+        entries.forEach { entry ->
+            entry.senseElement.forEach { sense ->
+                for (gloss in sense.gloss ?: listOf()) {
+                    if (gloss.language != language) continue
+                    if (gloss.element.length > 32) continue
+                    val baseWord = getBaseWord(gloss.element)
+                    if (baseWord.isBlank()) continue
+                    if (result.containsKey(baseWord)) {
+                        result[baseWord]!!.add(sense)
+                    } else {
+                        result[baseWord] = mutableListOf(sense)
+                    }
+                }
+            }
+        }
+
+        return result
+    }
 
     private fun postProcess(entry: EntryElement, dictionary: Dictionary) {
         Reading.postProcess(entry)
@@ -61,5 +76,5 @@ class Dictionary(
     private fun headWord(entry: EntryElement) =
         entry.kanjiElement?.first()?.element?.first() ?: entry.readingElement.first().element.first()
 
-    override fun toString(): String = entry.map { it.toString() }.joinToString()
+    override fun toString(): String = entries.joinToString { it.toString() }
 }

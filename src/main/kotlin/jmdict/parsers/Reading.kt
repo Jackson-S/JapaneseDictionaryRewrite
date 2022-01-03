@@ -5,8 +5,7 @@ import jmdict.datatypes.ReadingElement
 import jmdict.datatypes.Reference
 import jmdict.enums.EntryElement
 import jmdict.exceptions.MissingFieldException
-import jmdict.map
-import org.w3c.dom.Element
+import xmlreader.Tag
 
 object Reading {
     private const val ELEMENT = "reb"
@@ -15,7 +14,7 @@ object Reading {
     private const val INFORMATION = "re_inf"
     private const val PRIORITY = "re_pri"
 
-    fun parse(element: Element): ReadingElement =
+    fun parse(element: Tag): ReadingElement =
         ReadingElement(
             element = element(element),
             information = information(element),
@@ -34,18 +33,18 @@ object Reading {
         }
     }
 
-    private fun element(element: Element) =
-        element.getElementsByTagName(ELEMENT).map { it.textContent }.ifEmpty { throw MissingFieldException(ELEMENT) }
+    private fun element(element: Tag) =
+        element.childrenWithTagName(ELEMENT).map { it.text() }.ifEmpty { throw MissingFieldException(ELEMENT) }
 
-    private fun information(element: Element) =
-        element.getElementsByTagName(INFORMATION).map { it.textContent }.ifEmpty { null }
+    private fun information(element: Tag) =
+        element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
 
-    private fun priority(element: Element) =
-        element.getElementsByTagName(PRIORITY).map { it.textContent }.ifEmpty { null }
+    private fun priority(element: Tag) =
+        element.childrenWithTagName(PRIORITY).map { it.text() }.ifEmpty { null }
 
-    private fun noKanji(element: Element) =
-        element.getElementsByTagName(NO_KANJI).length != 0
+    private fun noKanji(element: Tag) =
+        element.childrenWithTagName(NO_KANJI).isNotEmpty()
 
-    private fun readingRestricted(element: Element) =
-        element.getElementsByTagName(RESTRICTED).map { Reference<KanjiElement>(it.textContent) }.ifEmpty { null }
+    private fun readingRestricted(element: Tag) =
+        element.childrenWithTagName(RESTRICTED).map { Reference<KanjiElement>(it.text()) }.ifEmpty { null }
 }

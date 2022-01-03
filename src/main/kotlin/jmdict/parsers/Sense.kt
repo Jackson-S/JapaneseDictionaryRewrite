@@ -10,8 +10,7 @@ import jmdict.enums.DialectEnum
 import jmdict.enums.EntryElement
 import jmdict.enums.FieldEnum
 import jmdict.enums.PartOfSpeechEnum
-import jmdict.map
-import org.w3c.dom.Element
+import xmlreader.Tag
 
 object Sense {
     private const val RESTRICTED_KANJI = "stagk"
@@ -27,7 +26,7 @@ object Sense {
     private const val GLOSS = "gloss"
     private const val CROSS_REFERENCE_DELIMITER = "・"
 
-    fun parse(element: Element): SenseElement =
+    fun parse(element: Tag): SenseElement =
         SenseElement(
             restrictedKanji = restrictedKanji(element),
             restrictedReading = restrictedReading(element),
@@ -42,38 +41,38 @@ object Sense {
             information = information(element)
         )
 
-    private fun restrictedKanji(element: Element) =
-        element.getElementsByTagName(RESTRICTED_KANJI).map { Reference<KanjiElement>(it.textContent) }
+    private fun restrictedKanji(element: Tag) =
+        element.childrenWithTagName(RESTRICTED_KANJI).map { Reference<KanjiElement>(it.text()) }
 
-    private fun restrictedReading(element: Element) =
-        element.getElementsByTagName(RESTRICTED_READING).map { Reference<ReadingElement>(it.textContent) }
+    private fun restrictedReading(element: Tag) =
+        element.childrenWithTagName(RESTRICTED_READING).map { Reference<ReadingElement>(it.text()) }
 
-    private fun crossReference(element: Element) =
-        element.getElementsByTagName(CROSS_REFERENCE).map { Reference<Referrable>(it.textContent) }
+    private fun crossReference(element: Tag) =
+        element.childrenWithTagName(CROSS_REFERENCE).map { Reference<Referrable>(it.text()) }
 
-    private fun antonym(element: Element) =
-        element.getElementsByTagName(ANTONYM).map { Reference<Referrable>(it.textContent) }
+    private fun antonym(element: Tag) =
+        element.childrenWithTagName(ANTONYM).map { Reference<Referrable>(it.text()) }
 
-    private fun partOfSpeech(element: Element) =
-        element.getElementsByTagName(PART_OF_SPEECH).map { PartOfSpeechEnum.from(it.textContent) }
+    private fun partOfSpeech(element: Tag) =
+        element.childrenWithTagName(PART_OF_SPEECH).map { PartOfSpeechEnum.from(it.text()) }
 
-    private fun field(element: Element) =
-        element.getElementsByTagName(FIELD).map { FieldEnum.from(it.textContent) }
+    private fun field(element: Tag) =
+        element.childrenWithTagName(FIELD).map { FieldEnum.from(it.text()) }
 
-    private fun misc(element: Element) =
-        element.getElementsByTagName(MISC).map { it.textContent }.ifEmpty { null }
+    private fun misc(element: Tag) =
+        element.childrenWithTagName(MISC).map { it.text() }.ifEmpty { null }
 
-    private fun sourceLanguage(element: Element) =
-        element.getElementsByTagName(LANGUAGE_SOURCE).map { SourceLanguage.parse(it as Element) }
+    private fun sourceLanguage(element: Tag) =
+        element.childrenWithTagName(LANGUAGE_SOURCE).map { SourceLanguage.parse(it) }
 
-    private fun dialect(element: Element) =
-        element.getElementsByTagName(DIALECT).map { DialectEnum.from(it.textContent) }
+    private fun dialect(element: Tag) =
+        element.childrenWithTagName(DIALECT).map { DialectEnum.from(it.text()) }
 
-    private fun gloss(element: Element) =
-        element.getElementsByTagName(GLOSS).map { Gloss.parse(it as Element) }
+    private fun gloss(element: Tag) =
+        element.childrenWithTagName(GLOSS).map { Gloss.parse(it) }
 
-    private fun information(element: Element) =
-        element.getElementsByTagName(INFORMATION).map { it.textContent }.ifEmpty { null }
+    private fun information(element: Tag) =
+        element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
 
     fun postProcess(entry: EntryElement, dictionary: Dictionary) {
         entry.senseElement.forEach { senseElement ->

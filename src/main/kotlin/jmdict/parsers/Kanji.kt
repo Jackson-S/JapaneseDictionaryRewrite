@@ -2,32 +2,26 @@ package jmdict.parsers
 
 import jmdict.datatypes.KanjiElement
 import jmdict.exceptions.MissingFieldException
-import jmdict.map
-import org.w3c.dom.Element
+import xmlreader.Tag
 
 object Kanji {
     private const val ELEMENT = "keb"
     private const val INFORMATION = "ke_inf"
     private const val PRIORITY = "ke_pri"
 
-    fun parse(element: Element): KanjiElement =
+    fun parse(element: Tag): KanjiElement =
         KanjiElement(
             element = element(element),
             information = information(element),
             priority = priority(element)
         )
 
-    private fun element(element: Element): List<String> {
-        return element.getElementsByTagName(ELEMENT).map { it.textContent }.ifEmpty {
-            throw MissingFieldException(
-                ELEMENT
-            )
-        }
-    }
+    private fun element(element: Tag): List<String> =
+        element.childrenWithTagName(ELEMENT).map { it.text() }.ifEmpty { throw MissingFieldException(ELEMENT) }
 
-    private fun information(element: Element) =
-        element.getElementsByTagName(INFORMATION).map { it.textContent }.ifEmpty { null }
+    private fun information(element: Tag) =
+        element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
 
-    private fun priority(element: Element) =
-        element.getElementsByTagName(PRIORITY).map { it.textContent }.ifEmpty { null }
+    private fun priority(element: Tag) =
+        element.childrenWithTagName(PRIORITY).map { it.text() }.ifEmpty { null }
 }

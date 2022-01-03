@@ -1,13 +1,17 @@
 package jmdict.datatypes
 
+import Language
+
 data class GlossElement(
+    val element: String,
+
     /**
      * The xml:lang attribute defines the target language of the
      * gloss. It will be coded using the three-letter language code from
      * the ISO 639 standard. When absent, the value "eng" (i.e. English)
      * is the default value.
      */
-    val language: String,
+    val language: Language,
 
     /**
      * The g_gend attribute defines the gender of the gloss (typically
