@@ -10,7 +10,8 @@ enum class Language(val code2: String, val code3: String) {
     SLOVENIAN("sl", "slv"),
     SPANISH("es", "spa"),
     SWEDISH("sv", "swe"),
-    PORTUGUESE("pt", "por");
+    PORTUGUESE("pt", "por"),
+    JAPANESE("ja", "jpn");
 
     companion object {
         fun fromCode(code: String) = values().first { it.code2 == code || it.code3 == code }

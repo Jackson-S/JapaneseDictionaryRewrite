@@ -22,5 +22,7 @@ class Dictionary(
 
     fun entry(headword: String) = entries.first { it.literal == headword }
 
+    fun entries() = entries.map { it.literal }
+
     override fun toString(): String = entries.joinToString { it.toString() }
 }

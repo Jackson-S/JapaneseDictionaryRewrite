@@ -2,15 +2,16 @@ package loader
 
 import java.io.File
 import java.io.FileNotFoundException
+import java.nio.charset.Charset
 
 class ResourceLoader(
     private val resourcePath: String
 ) : Loader {
-    override fun contents(format: Loader.Format): Any =
-        when (format) {
-            Loader.Format.BYTES -> resourcePath.asResource().readBytes()
-            Loader.Format.TEXT -> resourcePath.asResource().readText()
-        }
+    override fun contentsAsText(encoding: Charset): String =
+        resourcePath.asResource().readText()
+
+    override fun contentsAsBytes(): ByteArray =
+        resourcePath.asResource().readBytes()
 
     override fun path(): String {
         val fileContents = resourcePath.asResource().readBytes()

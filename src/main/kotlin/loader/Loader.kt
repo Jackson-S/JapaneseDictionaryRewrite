@@ -1,5 +1,7 @@
 package loader
 
+import java.nio.charset.Charset
+
 interface Loader {
     enum class Format {
         BYTES,
@@ -7,10 +9,14 @@ interface Loader {
     }
 
     /**
-     * Reads the contents of a file in either [Format.BYTES] or [Format.TEXT], if [Format.TEXT] is selected the returned
-     * type will be a UTF-8 [String], if [Format.BYTES] is selected then the return type will be [ByteArray]
+     * Reads the contents of a file in the encoding specified, the resulting string will be in UTF-8
      */
-    fun contents(format: Format): Any
+    fun contentsAsText(encoding: Charset = Charsets.UTF_8): String
+
+    /**
+     * Reads the contents of a file as an array of bytes
+     */
+    fun contentsAsBytes(): ByteArray
 
     /**
      * Returns the path of the file. The path returned may only be temporary

@@ -12,7 +12,7 @@ import xmlreader.impl.TagImpl
 class Dictionary(
     loader: Loader
 ) {
-    private val entries: List<EntryElement>
+    val entries: List<EntryElement>
     private val entryByIndex: MutableMap<Int, EntryElement> = mutableMapOf()
     private val entryByHeadWord: MutableMap<String, MutableList<EntryElement>> = mutableMapOf()
 

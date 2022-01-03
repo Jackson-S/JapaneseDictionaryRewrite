@@ -6,7 +6,7 @@ import java.io.File
 class StringLoader(
     val content: String
 ) : Loader {
-    override fun contents(format: Loader.Format): Any =
+    override fun contentsAsText(): Any =
         when (format) {
             Loader.Format.BYTES -> content.toByteArray()
             Loader.Format.TEXT -> content
