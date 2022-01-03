@@ -1,3 +1,4 @@
+import common.ResourceChecker
 import jmdict.Dictionary
 import loader.FileLoader
 import sentences.SentenceParser

@@ -50,7 +50,7 @@ data class MiscElement(
     val radicalName: List<String>?,
 
     /**
-     * The (former) Japanese Language Proficiency test level for this kanji.
+     * The (former) Japanese common.Language Proficiency test level for this kanji.
      * Values range from 1 (most advanced) to 4 (most elementary). This field
      * does not appear for kanji that were not required for any JLPT level.
      * Note that the JLPT test levels changed in 2010, with a new 5-level

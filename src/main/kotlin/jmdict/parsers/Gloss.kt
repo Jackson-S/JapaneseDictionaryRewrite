@@ -1,5 +1,6 @@
 package jmdict.parsers
 
+import common.Language
 import jmdict.datatypes.GlossElement
 import xmlreader.Tag
 
@@ -21,7 +22,7 @@ object Gloss {
         )
 
     private fun language(element: Tag) =
-        Language.fromCode(element.properties().getOrDefault(Attribute.LANGUAGE, Language.ENGLISH.code))
+        Language.fromCode(element.properties().getOrDefault(Attribute.LANGUAGE, Language.ENGLISH.code3))
 
     private fun gender(element: Tag) =
         element.properties()[Attribute.GENDER]

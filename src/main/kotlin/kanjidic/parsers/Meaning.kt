@@ -1,10 +1,11 @@
 package kanjidic.parsers
 
+import common.Language
 import kanjidic.datatypes.MeaningElement
 import xmlreader.Tag
 
 object Meaning {
-    private const val LANGUAGE = "xml:lang"
+    private const val LANGUAGE = "m_lang"
 
     fun parse(tag: Tag) =
         MeaningElement(

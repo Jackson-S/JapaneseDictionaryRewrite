@@ -1,4 +1,4 @@
-
+package common
 
 class ResourceChecker {
     companion object {

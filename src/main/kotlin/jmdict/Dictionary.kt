@@ -1,6 +1,6 @@
 package jmdict
 
-import Language
+import common.Language
 import jmdict.datatypes.EntryElement
 import jmdict.datatypes.SenseElement
 import jmdict.parsers.Entry

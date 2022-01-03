@@ -1,6 +1,6 @@
 package jmdict.datatypes
 
-import Language
+import common.Language
 
 data class GlossElement(
     val element: String,

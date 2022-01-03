@@ -1,6 +1,6 @@
 package kanjidic.datatypes
 
-import Language
+import common.Language
 
 data class MeaningElement(
     /**
