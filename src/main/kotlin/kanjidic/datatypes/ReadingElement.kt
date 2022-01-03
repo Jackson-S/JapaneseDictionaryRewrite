@@ -7,7 +7,7 @@ data class ReadingElement(
      * The reading element contains the reading or pronunciation
      * of the kanji.
      */
-    val reading: String,
+    val value: String,
 
     /**
      * The r_type attribute defines the type of reading in the reading

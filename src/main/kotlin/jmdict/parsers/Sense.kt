@@ -1,13 +1,13 @@
 package jmdict.parsers
 
 import jmdict.Dictionary
+import jmdict.datatypes.EntryElement
 import jmdict.datatypes.KanjiElement
 import jmdict.datatypes.ReadingElement
 import jmdict.datatypes.Reference
 import jmdict.datatypes.Referrable
 import jmdict.datatypes.SenseElement
 import jmdict.enums.DialectEnum
-import jmdict.enums.EntryElement
 import jmdict.enums.FieldEnum
 import jmdict.enums.PartOfSpeechEnum
 import xmlreader.Tag

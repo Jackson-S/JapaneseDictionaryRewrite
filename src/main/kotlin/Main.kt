@@ -1,7 +1,6 @@
 import jmdict.Dictionary
 import loader.FileLoader
 import sentences.SentenceParser
-import java.util.*
 
 fun main() {
     val baseMemory = ResourceChecker.memoryUsage()
@@ -16,9 +15,15 @@ fun main() {
 
     println("Loading dictionary")
     val dictionary = Dictionary(FileLoader(Configuration.JMDICT_LOCATION))
-    val dictionaryMemory = ResourceChecker.memoryUsage() - baseMemory + sentencesMemory
-    val headwords = dictionary.nonJapaneseHeadwords(Language.ENGLISH)
-//    println(headwords.keys)
+    val dictionaryMemory = ResourceChecker.memoryUsage() - (baseMemory + sentencesMemory)
 
-    println("Memory usage:\n\tBase: $baseMemory MB\n\tSentences: $sentencesMemory MB\n\tDictionary: $dictionaryMemory MB")
+    println("Loading kanji dictionary")
+    val kanjiDictionary = kanjidic.Dictionary(FileLoader(Configuration.KANJI_DICT_2_LOCATION))
+    val kanjiDictionaryMemory = ResourceChecker.memoryUsage() - (baseMemory + sentencesMemory + dictionaryMemory)
+
+    println("Memory usage:\n\tBase: $baseMemory MB\n" +
+            "\tSentences: $sentencesMemory MB\n" +
+            "\tDictionary: $dictionaryMemory MB\n" +
+            "\tKanji Dictionary: $kanjiDictionaryMemory MB\n" +
+            "\tTotal: ${ResourceChecker.memoryUsage()} MB")
 }

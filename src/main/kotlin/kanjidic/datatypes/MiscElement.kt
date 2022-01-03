@@ -29,7 +29,7 @@ data class MiscElement(
      * variant, or an alternative indexing code for the current kanji.
      * The type of variant is given in the var_type attribute.
      */
-    val variant: List<VariantElement>,
+    val variant: List<VariantElement>?,
 
     /**
      * A frequency-of-use ranking. The 2,500 most-used characters have a
@@ -47,7 +47,7 @@ data class MiscElement(
      * When the kanji is itself a radical and has a name, this element
      * contains the name (in hiragana.) [T2]
      */
-    val radicalName: String?,
+    val radicalName: List<String>?,
 
     /**
      * The (former) Japanese Language Proficiency test level for this kanji.

@@ -29,5 +29,13 @@ enum class ReadingTypeEnum(val code: String) {
     KOREAN_ROMANIZED("korean_r"),
     KOREAN_HANGUL("korean_h"),
     JAPANESE_ON("ja_on"),
-    JAPANESE_KUN("ja_kun")
+    JAPANESE_KUN("ja_kun");
+
+    companion object {
+        fun from(value: String) = try {
+            values().first { it.code == value }
+        } catch (e: NoSuchElementException) {
+            throw NoSuchElementException(e.message + " $value", e.cause)
+        }
+    }
 }

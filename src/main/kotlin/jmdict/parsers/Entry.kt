@@ -1,9 +1,9 @@
 package jmdict.parsers
 
+import jmdict.datatypes.EntryElement
 import jmdict.datatypes.KanjiElement
 import jmdict.datatypes.ReadingElement
 import jmdict.datatypes.SenseElement
-import jmdict.enums.EntryElement
 import jmdict.exceptions.MissingFieldException
 import xmlreader.Tag
 

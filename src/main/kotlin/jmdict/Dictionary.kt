@@ -1,8 +1,8 @@
 package jmdict
 
 import Language
+import jmdict.datatypes.EntryElement
 import jmdict.datatypes.SenseElement
-import jmdict.enums.EntryElement
 import jmdict.parsers.Entry
 import jmdict.parsers.Reading
 import jmdict.parsers.Sense

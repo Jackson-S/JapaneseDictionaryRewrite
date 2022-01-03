@@ -1,7 +1,6 @@
 package jmdict.parsers
 
 import jmdict.datatypes.SourceLanguageElement
-import org.w3c.dom.Element
 import xmlreader.Tag
 
 object SourceLanguage {

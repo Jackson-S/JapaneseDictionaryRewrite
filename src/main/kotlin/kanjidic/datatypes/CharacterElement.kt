@@ -20,13 +20,15 @@ data class CharacterElement(
      */
     val radical: List<RadicalElement>,
 
+    val misc: MiscElement,
+
     /**
      * The readings for the kanji in several languages, and the meanings, also
      * in several languages. The readings and meanings are grouped to enable
      * the handling of the situation where the meaning is differentiated by
      * reading. [T1]
      */
-    val readingMeaning: ReadingMeaningElement?,
+    val readingMeaning: List<ReadingMeaningElement>?,
 
     /**
      * Japanese readings that are now only associated with names.
