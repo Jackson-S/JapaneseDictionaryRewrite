@@ -4,7 +4,7 @@ enum class Language(val code2: String, val code3: String) {
     DUTCH("nl", "dut"),
     ENGLISH("en", "eng"),
     FRENCH("fr", "fre"),
-    GERMAN("de","ger"),
+    GERMAN("de", "ger"),
     HUNGARIAN("hu", "hun"),
     RUSSIAN("ru", "rus"),
     SLOVENIAN("sl", "slv"),

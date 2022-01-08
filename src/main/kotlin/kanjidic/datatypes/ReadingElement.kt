@@ -14,10 +14,10 @@ data class ReadingElement(
      * element. The current values are:
      * pinyin - the modern PinYin romanization of the Chinese reading
      * of the kanji. The tones are represented by a concluding
-     * digit. [Y]
+     * digit.
      * korean_r - the romanized form of the Korean reading(s) of the
      * kanji.  The readings are in the (Republic of Korea) Ministry
-     * of Education style of romanization. [W]
+     * of Education style of romanization.
      * korean_h - the Korean reading(s) of the kanji in hangul.
      * ja_on - the "on" Japanese reading of the kanji, in katakana.
      * Another attribute r_status, if present, will indicate with

@@ -26,7 +26,7 @@ object Reading {
     fun postProcess(entry: EntryElement) {
         entry.readingElement.forEach { reading ->
             reading.readingRestricted?.forEach { restrictedReading ->
-                restrictedReading.value = entry.kanjiElement!!.first { kanji ->
+                restrictedReading.value = entry.kanjiElements!!.first { kanji ->
                     kanji.element.contains(restrictedReading.referralText)
                 }
             }

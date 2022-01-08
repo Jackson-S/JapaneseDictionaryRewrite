@@ -1,8 +1,7 @@
 import common.ResourceChecker
-import jmdict.Dictionary
+import jmdict.JMDict
 import loader.FileLoader
-import output.common.datatypes.JapaneseEntry
-import output.web.HtmlOutput
+import output.dictionaryapp.DictionaryAppOutput
 import sentences.TatoebaSentences
 
 fun main() {
@@ -13,22 +12,23 @@ fun main() {
     val sentencesMemory = ResourceChecker.memoryUsage() - baseMemory
 
     println("Loading dictionary")
-    val dictionary = Dictionary(FileLoader(Configuration.JMDICT_LOCATION))
+    val dictionary = JMDict(FileLoader(Configuration.JMDICT_LOCATION))
     val dictionaryMemory = ResourceChecker.memoryUsage() - (baseMemory + sentencesMemory)
 
     println("Loading kanji dictionary")
-    val kanjiDictionary = kanjidic.Dictionary(FileLoader(Configuration.KANJI_DICT_2_LOCATION))
+    val kanjiDictionary = kanjidic.KanjiDic2(FileLoader(Configuration.KANJI_DICT_2_LOCATION))
     val kanjiDictionaryMemory = ResourceChecker.memoryUsage() - (baseMemory + sentencesMemory + dictionaryMemory)
 
-    println("Generating output dictionary")
-    val outputDictionary = output.common.Dictionary(dictionary, kanjiDictionary, sentences)
+    println("Generating dictionary app output")
+    val dictionaryAppOutput = DictionaryAppOutput(dictionary, kanjiDictionary, sentences)
+    println("Writing dictionary app output to disk")
+    dictionaryAppOutput.writeAll(Configuration.OUTPUT_DIRECTORY)
 
-    val htmlOutput = HtmlOutput("/Users/jackson/Desktop/output")
-    outputDictionary.entries.subList(0, 10).forEach { htmlOutput.render(it as JapaneseEntry) }
-
-    println("Memory usage:\n\tBase: $baseMemory MB\n" +
+    println(
+        "Memory usage:\n\tBase: $baseMemory MB\n" +
             "\tSentences: $sentencesMemory MB\n" +
             "\tDictionary: $dictionaryMemory MB\n" +
             "\tKanji Dictionary: $kanjiDictionaryMemory MB\n" +
-            "\tTotal: ${ResourceChecker.memoryUsage()} MB")
+            "\tTotal: ${ResourceChecker.memoryUsage()} MB"
+    )
 }

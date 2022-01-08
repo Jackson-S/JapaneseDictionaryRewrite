@@ -7,7 +7,7 @@ import kanjidic.parsers.Header
 import loader.Loader
 import xmlreader.impl.TagImpl
 
-class Dictionary(
+class KanjiDic2(
     loader: Loader
 ) {
     private val header: HeaderElement

@@ -1,6 +1,6 @@
 package jmdict.parsers
 
-import jmdict.Dictionary
+import jmdict.JMDict
 import jmdict.datatypes.EntryElement
 import jmdict.datatypes.KanjiElement
 import jmdict.datatypes.ReadingElement
@@ -74,10 +74,10 @@ object Sense {
     private fun information(element: Tag) =
         element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
 
-    fun postProcess(entry: EntryElement, dictionary: Dictionary) {
+    fun postProcess(entry: EntryElement, dictionary: JMDict) {
         entry.senseElement.forEach { senseElement ->
             senseElement.restrictedKanji?.forEach { restrictedKanji ->
-                restrictedKanji.value = entry.kanjiElement!!.first { it.element.contains(restrictedKanji.referralText) }
+                restrictedKanji.value = entry.kanjiElements!!.first { it.element.contains(restrictedKanji.referralText) }
             }
 
             senseElement.restrictedReading?.forEach { restrictedReading ->

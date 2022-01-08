@@ -28,7 +28,7 @@ data class CharacterElement(
      * The readings for the kanji in several languages, and the meanings, also
      * in several languages. The readings and meanings are grouped to enable
      * the handling of the situation where the meaning is differentiated by
-     * reading. [T1]
+     * reading.
      */
     val readingMeaning: List<ReadingMeaningElement>?,
 

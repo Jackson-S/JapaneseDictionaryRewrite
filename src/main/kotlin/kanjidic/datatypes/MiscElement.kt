@@ -45,7 +45,7 @@ data class MiscElement(
 
     /**
      * When the kanji is itself a radical and has a name, this element
-     * contains the name (in hiragana.) [T2]
+     * contains the name (in hiragana.)
      */
     val radicalName: List<String>?,
 

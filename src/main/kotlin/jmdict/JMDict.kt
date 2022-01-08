@@ -9,7 +9,7 @@ import jmdict.parsers.Sense
 import loader.Loader
 import xmlreader.impl.TagImpl
 
-class Dictionary(
+class JMDict(
     loader: Loader
 ) {
     val entries: List<EntryElement>
@@ -68,13 +68,13 @@ class Dictionary(
         return result
     }
 
-    private fun postProcess(entry: EntryElement, dictionary: Dictionary) {
+    private fun postProcess(entry: EntryElement, dictionary: JMDict) {
         Reading.postProcess(entry)
         Sense.postProcess(entry, dictionary)
     }
 
     private fun headWord(entry: EntryElement) =
-        entry.kanjiElement?.first()?.element?.first() ?: entry.readingElement.first().element.first()
+        entry.kanjiElements?.first()?.element?.first() ?: entry.readingElement.first().element.first()
 
     override fun toString(): String = entries.joinToString { it.toString() }
 }

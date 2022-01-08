@@ -12,7 +12,7 @@ data class EntryElement(
      * A unique numeric sequence number for each entry
      */
     val entrySequence: Int,
-    val kanjiElement: List<KanjiElement>?,
+    val kanjiElements: List<KanjiElement>?,
     val readingElement: List<ReadingElement>,
     val senseElement: List<SenseElement>
 ) : Referrable, Entry {
@@ -21,5 +21,11 @@ data class EntryElement(
      * If present the first Kanji element acts as the headword, otherwise the first reading element is the headword
      */
     override val headWord: String
-        get() = kanjiElement?.let { it.first().element.first() } ?: readingElement.first().element.first()
+        get() = kanjiElements?.first()?.element?.first() ?: readingElement.first().element.first()
+
+    /**
+     * If the headword is a kanji element this will return the primary reading for the entry
+     */
+    val headReading: String?
+        get() = if (kanjiElements != null) readingElement.first().element.first() else null
 }

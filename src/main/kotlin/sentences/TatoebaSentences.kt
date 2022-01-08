@@ -2,8 +2,6 @@ package sentences
 
 import loader.Loader
 import sentences.datatypes.Sentence
-import java.nio.charset.CharsetDecoder
-import java.nio.charset.CharsetEncoder
 
 class TatoebaSentences(
     loader: Loader
@@ -19,7 +17,7 @@ class TatoebaSentences(
         private val SENSE_MARKER_REGEX = "\\[.*]".toRegex()
         private val SENTENCE_FORM_REGEX = "\\{.*}".toRegex()
         private val HIRAGANA_FORM_REGEX = "\\(.*\\)".toRegex()
-        private val HIRAGANA_FORM_PARENTHESIS = "()"
+        private const val HIRAGANA_FORM_PARENTHESIS = "()"
     }
 
     private val sentenceList: List<Sentence>
@@ -33,25 +31,29 @@ class TatoebaSentences(
 
         // Create the sentence list
         sentenceList = sentenceLines.zip(japaneseWordLines).map { (sentences, japaneseWords) ->
-            // Remove the sentence id prefix at the end of each sentence pair
-            val sentencesCleaned = sentences.split(SENTENCE_ID_PREFIX).first()
-            val japaneseSentence = sentencesCleaned.split(SENTENCE_PAIR_DELIMITER)[0]
-            val englishSentence = sentencesCleaned.split(SENTENCE_PAIR_DELIMITER)[1]
-            val wordlist = japaneseWords.split(JAPANESE_WORD_LIST_DELIMITER).map {
-                it.replace(SENSE_MARKER_REGEX, "")
-                    .replace(SENTENCE_FORM_REGEX, "")
-                    .replace(HIRAGANA_FORM_REGEX, "")
+            // Get the raw japanese and english sentences
+            val (japaneseSentence, englishSentence) = sentences
+                .split(SENTENCE_ID_PREFIX)
+                .first()
+                .deleteFirst(SENTENCE_PAIR_PREFIX)
+                .split(SENTENCE_PAIR_DELIMITER)
+
+            // Break up the list of japanese words in the sentence
+            val wordlist = japaneseWords.split(JAPANESE_WORD_LIST_DELIMITER).map { word ->
+                word.delete(SENSE_MARKER_REGEX, SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX)
             }
+
+            // Get a list of irregular readings or words in the sentence
             val irregularWords = japaneseWords.split(' ').filter {
                 it.contains(HIRAGANA_FORM_REGEX)
             }.associate {
                 val word = it.replace(SENSE_MARKER_REGEX, "")
-                    .replace(SENTENCE_FORM_REGEX, "")
-                    .replace(HIRAGANA_FORM_REGEX, "")
+                    .delete(SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX)
                 val reading = HIRAGANA_FORM_REGEX.find(it)!!.value
                     .trim(HIRAGANA_FORM_PARENTHESIS[0], HIRAGANA_FORM_PARENTHESIS[1])
                 word to reading
             }
+
             Sentence(
                 japanese = japaneseSentence,
                 english = englishSentence,
@@ -75,6 +77,16 @@ class TatoebaSentences(
         }
     }
 
-    fun sentences(japaneseWord: String) =
+    fun sentencesForWord(japaneseWord: String) =
         wordMap[japaneseWord]?.toList()
+
+    private fun String.delete(vararg regex: Regex): String {
+        var result = this
+        regex.forEach {
+            result = result.replace(it, "")
+        }
+        return result
+    }
+
+    private fun String.deleteFirst(string: String) = replaceFirst(string, "")
 }

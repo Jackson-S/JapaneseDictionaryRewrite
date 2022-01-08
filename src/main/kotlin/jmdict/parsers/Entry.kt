@@ -8,15 +8,15 @@ import jmdict.exceptions.MissingFieldException
 import xmlreader.Tag
 
 object Entry {
-    const val ENTRY_SEQUENCE = "ent_seq"
-    const val KANJI_ELEMENT = "k_ele"
-    const val READING_ELEMENT = "r_ele"
-    const val SENSE = "sense"
+    private const val ENTRY_SEQUENCE = "ent_seq"
+    private const val KANJI_ELEMENT = "k_ele"
+    private const val READING_ELEMENT = "r_ele"
+    private const val SENSE = "sense"
 
     fun parse(element: Tag): EntryElement =
         EntryElement(
             entrySequence = sequence(element),
-            kanjiElement = kanji(element),
+            kanjiElements = kanji(element),
             readingElement = reading(element),
             senseElement = sense(element)
         )
