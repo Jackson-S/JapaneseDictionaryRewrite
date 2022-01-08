@@ -20,7 +20,9 @@ import kotlinx.html.rt
 import kotlinx.html.ruby
 import kotlinx.html.section
 import kotlinx.html.summary
+import kotlinx.html.title
 import org.w3c.dom.Document
+import output.dictionaryapp.EnumMapping
 import sentences.datatypes.Sentence
 
 class JMDictPage(
@@ -67,7 +69,10 @@ class JMDictPage(
             div(Stylesheet.READING) {
                 p { +reading.first }
                 reading.second?.forEach { info ->
-                    div(Stylesheet.BADGE) { +info.code }
+                    div(Stylesheet.BADGE) {
+                        EnumMapping.map(info).second?.let { title = it }
+                        +EnumMapping.map(info).first
+                    }
                 }
             }
         }
@@ -124,8 +129,11 @@ class JMDictPage(
                     }
 
                     div(Stylesheet.BADGE_BOX) {
-                        sense.partOfSpeech?.forEach {
-                            div(Stylesheet.BADGE) { +it.code }
+                        sense.partOfSpeech?.forEach { partOfSpeech ->
+                            div(Stylesheet.BADGE) {
+                                title = EnumMapping.map(partOfSpeech).second
+                                +EnumMapping.map(partOfSpeech).first
+                            }
                         }
                     }
                 }

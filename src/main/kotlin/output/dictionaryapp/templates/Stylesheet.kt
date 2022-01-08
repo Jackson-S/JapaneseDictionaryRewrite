@@ -83,13 +83,22 @@ object Stylesheet {
           border-radius: 5px;
         }
         
+        .$READING {
+          display: flex;
+          column-gap: 5px;
+        }
+        
+        .$READINGS .$BADGE {
+          background: white;
+        }
+        
         .$READINGS {
           display: inline-flex;
           flex-direction: column;
         }
         
         .$BADGE {
-          display: inline-block;
+          display: inline;
           padding: 2px 5px;
           margin: 0 2px;
           background: rgb(230,230,230);

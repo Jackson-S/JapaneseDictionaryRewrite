@@ -42,7 +42,12 @@ class DictionaryAppOutput(
 
         documentRoot.setAttribute("xmlns:d", DICTIONARY_NAMESPACE_URI)
 
-        jmdict.entries.filter {
+        val entries = if (Configuration.DEBUG_OUTPUT)
+            jmdict.entries.filter { Configuration.DEBUG_OUTPUT_ENTRIES.contains(it.headWord) }
+        else
+            jmdict.entries
+
+        entries.filter {
             it.hasLanguage(languages)
         }.forEach { entry ->
             val sentences = tatoeba.sentencesForWord(entry.headWord)

@@ -23,6 +23,12 @@ object Configuration {
     // Substitutes human readable element classes for single-letter names
     const val SIMPLIFY_TAG_CLASS_NAMES = true
 
+    // Will only output the below subset of the dictionary for testing purposes
+    const val DEBUG_OUTPUT = false
+
+    // The entries to create when [DEBUG_OUTPUT] is enabled
+    val DEBUG_OUTPUT_ENTRIES = listOf("赤", "青", "緑")
+
     // The two and three letter language abbreviation to create a dictionary for
     val LANGUAGE = listOf(Language.ENGLISH)
 }
