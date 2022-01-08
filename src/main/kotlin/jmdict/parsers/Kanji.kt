@@ -1,6 +1,7 @@
 package jmdict.parsers
 
 import jmdict.datatypes.KanjiElement
+import jmdict.enums.KanjiInfoEnum
 import jmdict.exceptions.MissingFieldException
 import xmlreader.Tag
 
@@ -20,7 +21,7 @@ object Kanji {
         element.childrenWithTagName(ELEMENT).map { it.text() }.ifEmpty { throw MissingFieldException(ELEMENT) }
 
     private fun information(element: Tag) =
-        element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
+        element.childrenWithTagName(INFORMATION).map { KanjiInfoEnum.from(it.text()) }.ifEmpty { null }
 
     private fun priority(element: Tag) =
         element.childrenWithTagName(PRIORITY).map { it.text() }.ifEmpty { null }

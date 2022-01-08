@@ -2,6 +2,8 @@ package output.dictionaryapp.templates
 
 import common.Language
 import jmdict.datatypes.EntryElement
+import jmdict.enums.InformationEnum
+import jmdict.enums.ReadingInformationEnum
 import kotlinx.html.BODY
 import kotlinx.html.P
 import kotlinx.html.SECTION
@@ -55,7 +57,7 @@ class JMDictPage(
         }
     }
 
-    private fun SECTION.readings(header: String, readings: List<Pair<String, List<String>?>>) {
+    private fun SECTION.readings(header: String, readings: List<Pair<String, List<InformationEnum>?>>) {
         h3(Stylesheet.SECTION_HEADING) {
             attributes["apple_mouseover_disable"] = "1"
             +header
@@ -65,7 +67,7 @@ class JMDictPage(
             div(Stylesheet.READING) {
                 p { +reading.first }
                 reading.second?.forEach { info ->
-                    div(Stylesheet.BADGE) { +info }
+                    div(Stylesheet.BADGE) { +info.code }
                 }
             }
         }

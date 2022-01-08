@@ -1,6 +1,6 @@
 package jmdict.enums
 
-enum class PartOfSpeechEnum(val code: String, val description: String) {
+enum class PartOfSpeechEnum(override val code: String, override val description: String) : InformationEnum {
     ABBREVIATION("abbr", "abbreviation"),
     ADJECTIVE_I("adj-i", "adjective (keiyoushi)"),
     ADJECTIVE_IX("adj-ix", "adjective (keiyoushi) - yoi/ii class"),

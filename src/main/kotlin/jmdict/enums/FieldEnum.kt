@@ -1,6 +1,6 @@
 package jmdict.enums
 
-enum class FieldEnum(val code: String, val description: String) {
+enum class FieldEnum(override val code: String, override val description: String) : InformationEnum {
     AGRICULTURE("agric", "agriculture"),
     ANATOMY("anat", "anatomy"),
     ARCHEOLOGY("archeol", "archeology"),

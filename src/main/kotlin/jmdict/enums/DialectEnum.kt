@@ -1,6 +1,6 @@
 package jmdict.enums
 
-enum class DialectEnum(val code: String, val description: String) {
+enum class DialectEnum(override val code: String, override val description: String) : InformationEnum {
     BRAZILIAN("bra", "Brazilian"),
     KYOTO_BEN("kyb", "Kyoto-ben"),
     OSAKA_BEN("osb", "Osaka-ben"),

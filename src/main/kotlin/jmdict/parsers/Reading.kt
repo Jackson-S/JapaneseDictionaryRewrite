@@ -4,6 +4,7 @@ import jmdict.datatypes.EntryElement
 import jmdict.datatypes.KanjiElement
 import jmdict.datatypes.ReadingElement
 import jmdict.datatypes.Reference
+import jmdict.enums.ReadingInformationEnum
 import jmdict.exceptions.MissingFieldException
 import xmlreader.Tag
 
@@ -37,7 +38,7 @@ object Reading {
         element.childrenWithTagName(ELEMENT).map { it.text() }.ifEmpty { throw MissingFieldException(ELEMENT) }
 
     private fun information(element: Tag) =
-        element.childrenWithTagName(INFORMATION).map { it.text() }.ifEmpty { null }
+        element.childrenWithTagName(INFORMATION).map { ReadingInformationEnum.from(it.text()) }.ifEmpty { null }
 
     private fun priority(element: Tag) =
         element.childrenWithTagName(PRIORITY).map { it.text() }.ifEmpty { null }

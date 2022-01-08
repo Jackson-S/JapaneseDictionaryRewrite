@@ -1,5 +1,7 @@
 package jmdict.datatypes
 
+import jmdict.enums.KanjiInfoEnum
+
 /**
  * The kanji element, or in its absence, the reading element, is
  * the defining component of each entry.
@@ -27,7 +29,7 @@ data class KanjiElement(
      * orthography of the keb, and will typically indicate some unusual
      * aspect, such as okurigana irregularity.
      */
-    val information: List<String>?,
+    val information: List<KanjiInfoEnum>?,
 
     /**
      * This and the equivalent re_pri field are provided to record

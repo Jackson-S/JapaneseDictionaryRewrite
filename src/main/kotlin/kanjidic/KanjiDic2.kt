@@ -11,7 +11,7 @@ class KanjiDic2(
     loader: Loader
 ) {
     private val header: HeaderElement
-    private val entries: List<CharacterElement>
+    val entries: List<CharacterElement>
 
     init {
         val root = TagImpl(loader, "kanjidic2")
@@ -21,8 +21,6 @@ class KanjiDic2(
     }
 
     fun entry(headword: String) = entries.first { it.literal == headword }
-
-    fun entries() = entries.map { it.literal }
 
     override fun toString(): String = entries.joinToString { it.toString() }
 }

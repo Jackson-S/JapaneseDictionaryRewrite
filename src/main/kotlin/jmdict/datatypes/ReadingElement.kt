@@ -1,5 +1,7 @@
 package jmdict.datatypes
 
+import jmdict.enums.ReadingInformationEnum
+
 /**
  * The reading element typically contains the valid readings
  * of the word(s) in the kanji element using modern kanadzukai.
@@ -39,7 +41,7 @@ data class ReadingElement(
      * Typically it will be used to indicate some unusual aspect of
      * the reading.
      */
-    val information: List<String>?,
+    val information: List<ReadingInformationEnum>?,
 
     /**
      * This and the equivalent re_pri field are provided to record
