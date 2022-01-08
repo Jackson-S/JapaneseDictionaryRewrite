@@ -20,7 +20,7 @@ fun main() {
     val kanjiDictionaryMemory = ResourceChecker.memoryUsage() - (baseMemory + sentencesMemory + dictionaryMemory)
 
     println("Generating dictionary app output")
-    val dictionaryAppOutput = DictionaryAppOutput(dictionary, kanjiDictionary, sentences)
+    val dictionaryAppOutput = DictionaryAppOutput(dictionary, kanjiDictionary, sentences, Configuration.LANGUAGE)
     println("Writing dictionary app output to disk")
     dictionaryAppOutput.writeAll(Configuration.OUTPUT_DIRECTORY)
 

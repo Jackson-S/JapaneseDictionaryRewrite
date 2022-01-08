@@ -2,6 +2,7 @@ package output.dictionaryapp
 
 import common.Language
 import jmdict.JMDict
+import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
 import output.dictionaryapp.templates.JMDictPage
 import output.dictionaryapp.templates.Makefile
@@ -18,7 +19,7 @@ class DictionaryAppOutput(
     val jmdict: JMDict,
     val kanjiDic2: KanjiDic2,
     val tatoeba: TatoebaSentences,
-    languages: List<Language> = listOf(Language.ENGLISH)
+    val languages: List<Language>
 ) {
     private companion object {
         const val DICTIONARY_TAG = "d:dictionary"
@@ -41,7 +42,9 @@ class DictionaryAppOutput(
 
         documentRoot.setAttribute("xmlns:d", DICTIONARY_NAMESPACE_URI)
 
-        jmdict.entries.forEach { entry ->
+        jmdict.entries.filter {
+            it.hasLanguage(languages)
+        }.forEach { entry ->
             val sentences = tatoeba.sentencesForWord(entry.headWord)
             val entryHtml = jmDictPageGenerator.japaneseEntry(entry, sentences)
 
@@ -65,6 +68,13 @@ class DictionaryAppOutput(
         writeMakefile(outputDirectory)
         writeDictionary(outputDirectory)
     }
+
+    private fun EntryElement.hasLanguage(languages: List<Language>) =
+        senseElement.any { sense ->
+            sense.gloss?.any { gloss ->
+                languages.contains(gloss.language)
+            } ?: false
+        }
 
     private fun writeDictionary(outputDirectory: String) {
         val outputWriter = FileWriter("$outputDirectory/JapaneseDictionary.xml")

@@ -1,3 +1,5 @@
+import common.Language
+
 object Configuration {
     /* Input Configuration */
     // The JMdict dictionary XML file, either the full dictinary or the english entries only will work
@@ -22,5 +24,5 @@ object Configuration {
     const val SIMPLIFY_TAG_CLASS_NAMES = true
 
     // The two and three letter language abbreviation to create a dictionary for
-    val LANGUAGE = listOf("en", "eng")
+    val LANGUAGE = listOf(Language.ENGLISH)
 }

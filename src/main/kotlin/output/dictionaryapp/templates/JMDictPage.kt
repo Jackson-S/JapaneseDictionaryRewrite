@@ -4,7 +4,6 @@ import common.Language
 import jmdict.datatypes.EntryElement
 import kotlinx.html.BODY
 import kotlinx.html.P
-import kotlinx.html.RUBY
 import kotlinx.html.SECTION
 import kotlinx.html.article
 import kotlinx.html.body
@@ -153,13 +152,19 @@ class JMDictPage(
         document.create.html {
             body {
                 title(entry)
+
                 if (entry.requiresSubHeader()) {
                     section(Stylesheet.SUB_HEADER) {
                         kanaReadings(entry)
                         kanjiReadings(entry)
                     }
                 }
-                sentences(sentences)
+
+                // There are only english sentences contained in the Tanaka Corpus
+                if (language.contains(Language.ENGLISH)) {
+                    sentences(sentences)
+                }
+
                 definitions(entry, language)
             }
         }
