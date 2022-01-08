@@ -3,6 +3,8 @@ package output.dictionaryapp.templates
 import common.Language
 import jmdict.datatypes.EntryElement
 import kotlinx.html.BODY
+import kotlinx.html.P
+import kotlinx.html.RUBY
 import kotlinx.html.SECTION
 import kotlinx.html.article
 import kotlinx.html.body
@@ -13,6 +15,8 @@ import kotlinx.html.h1
 import kotlinx.html.h3
 import kotlinx.html.html
 import kotlinx.html.p
+import kotlinx.html.rt
+import kotlinx.html.ruby
 import kotlinx.html.section
 import kotlinx.html.summary
 import org.w3c.dom.Document
@@ -75,11 +79,23 @@ class JMDictPage(
 
                 sentences.first(limit).forEach { sentence ->
                     article(Stylesheet.SENTENCE) {
-                        p { +sentence.japanese }
+                        p { furiganaSentence(sentence) }
                         p { +sentence.english }
                     }
                 }
             }
+        }
+    }
+
+    private fun P.furiganaSentence(sentence: Sentence) {
+        sentence.japaneseWithReadings.forEach {
+            if (it.reading == null)
+                +it.word
+            else
+                ruby {
+                    +it.word
+                    rt { +it.reading }
+                }
         }
     }
 

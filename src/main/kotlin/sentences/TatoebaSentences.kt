@@ -18,6 +18,7 @@ class TatoebaSentences(
         private val SENSE_MARKER_REGEX = "\\[.*]".toRegex()
         private val SENTENCE_FORM_REGEX = "\\{.*}".toRegex()
         private val HIRAGANA_FORM_REGEX = "\\(.*\\)".toRegex()
+        private val COMMENT_REGEX = "#.*".toRegex()
         private val VERIFIED_MARKER_REGEX = VERIFIED_MARKER.toRegex()
         private const val HIRAGANA_FORM_PARENTHESIS = "()"
     }
@@ -27,18 +28,20 @@ class TatoebaSentences(
 
     init {
         val processedLines = loader.contentsAsText().split('\n').filter { !it.startsWith(COMMENT_PREFIX) }
-        val sentenceLines = processedLines.filter { it.startsWith(SENTENCE_PAIR_PREFIX) }
-        val japaneseWordLines = processedLines.filter { it.startsWith(JAPANESE_WORD_LIST_PREFIX) }
+
+        val sentenceLines = processedLines.filter { it.startsWith(SENTENCE_PAIR_PREFIX) }.map {
+            it.deleteFirst(SENTENCE_PAIR_PREFIX)
+            it.delete(COMMENT_REGEX)
+        }
+
+        val japaneseWordLines = processedLines.filter { it.startsWith(JAPANESE_WORD_LIST_PREFIX) }.map {
+            it.deleteFirst(JAPANESE_WORD_LIST_PREFIX)
+        }
 
         // Create the sentence list
         sentenceList = sentenceLines.zip(japaneseWordLines).map { (sentences, japaneseWithInfo) ->
             // Get the raw japanese and english sentences
-            val (japaneseSentence, englishSentence) = sentences
-                .split(SENTENCE_ID_PREFIX)
-                .first()
-                .deleteFirst(SENTENCE_PAIR_PREFIX)
-                .split(SENTENCE_PAIR_DELIMITER)
-
+            val (japaneseSentence, englishSentence) = sentences.split(SENTENCE_PAIR_DELIMITER)
             val verifiedWords = japaneseWithInfo.verifiedWords()
 
             val sentence = Sentence(
@@ -82,6 +85,7 @@ class TatoebaSentences(
 
     private fun String.originalForm() = this
         .delete(SENSE_MARKER_REGEX, SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX, VERIFIED_MARKER_REGEX)
+        .deleteFirst(JAPANESE_WORD_LIST_PREFIX)
 
     private fun MutableMap<String, MutableList<Sentence>>.addEntry(key: String, value: Sentence) =
         getOrPut(key) { mutableListOf() }.add(value)
