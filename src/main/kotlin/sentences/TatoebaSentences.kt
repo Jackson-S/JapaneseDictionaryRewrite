@@ -2,6 +2,7 @@ package sentences
 
 import loader.Loader
 import sentences.datatypes.Sentence
+import sentences.datatypes.Word
 
 class TatoebaSentences(
     loader: Loader
@@ -17,20 +18,20 @@ class TatoebaSentences(
         private val SENSE_MARKER_REGEX = "\\[.*]".toRegex()
         private val SENTENCE_FORM_REGEX = "\\{.*}".toRegex()
         private val HIRAGANA_FORM_REGEX = "\\(.*\\)".toRegex()
+        private val VERIFIED_MARKER_REGEX = VERIFIED_MARKER.toRegex()
         private const val HIRAGANA_FORM_PARENTHESIS = "()"
     }
 
     private val sentenceList: List<Sentence>
-    private val wordMap: MutableMap<String, MutableList<Sentence>>
+    private val verifiedWordMapping: MutableMap<String, MutableList<Sentence>> = mutableMapOf()
 
     init {
         val processedLines = loader.contentsAsText().split('\n').filter { !it.startsWith(COMMENT_PREFIX) }
-
         val sentenceLines = processedLines.filter { it.startsWith(SENTENCE_PAIR_PREFIX) }
         val japaneseWordLines = processedLines.filter { it.startsWith(JAPANESE_WORD_LIST_PREFIX) }
 
         // Create the sentence list
-        sentenceList = sentenceLines.zip(japaneseWordLines).map { (sentences, japaneseWords) ->
+        sentenceList = sentenceLines.zip(japaneseWordLines).map { (sentences, japaneseWithInfo) ->
             // Get the raw japanese and english sentences
             val (japaneseSentence, englishSentence) = sentences
                 .split(SENTENCE_ID_PREFIX)
@@ -38,47 +39,52 @@ class TatoebaSentences(
                 .deleteFirst(SENTENCE_PAIR_PREFIX)
                 .split(SENTENCE_PAIR_DELIMITER)
 
-            // Break up the list of japanese words in the sentence
-            val wordlist = japaneseWords.split(JAPANESE_WORD_LIST_DELIMITER).map { word ->
-                word.delete(SENSE_MARKER_REGEX, SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX)
-            }
+            val verifiedWords = japaneseWithInfo.verifiedWords()
 
-            // Get a list of irregular readings or words in the sentence
-            val irregularWords = japaneseWords.split(' ').filter {
-                it.contains(HIRAGANA_FORM_REGEX)
-            }.associate {
-                val word = it.replace(SENSE_MARKER_REGEX, "")
-                    .delete(SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX)
-                val reading = HIRAGANA_FORM_REGEX.find(it)!!.value
-                    .trim(HIRAGANA_FORM_PARENTHESIS[0], HIRAGANA_FORM_PARENTHESIS[1])
-                word to reading
-            }
-
-            Sentence(
+            val sentence = Sentence(
                 japanese = japaneseSentence,
+                japaneseWithReadings = japaneseWithInfo.toFuriganaSentence(),
                 english = englishSentence,
-                verifiedWords = wordlist,
-                japaneseIrregularWords = irregularWords
+                verifiedWords = verifiedWords
             )
-        }
 
-        // Create a mapping of words to sentences containing them
-        wordMap = mutableMapOf()
-        sentenceList.forEach { sentence ->
-            sentence.verifiedWords.forEach {
-                if (wordMap.contains(it)) {
-                    if (!wordMap[it]!!.contains(sentence)) {
-                        wordMap[it]!!.add(sentence)
-                    }
-                } else {
-                    wordMap[it] = mutableListOf(sentence)
-                }
+            verifiedWords.forEach { word ->
+                verifiedWordMapping.addEntry(word, sentence)
             }
+
+            sentence
         }
     }
 
-    fun sentencesForWord(japaneseWord: String) =
-        wordMap[japaneseWord]?.toList()
+    /**
+     * Takes the japanese breakdown and returns a list of Word objects with readings where provided
+     */
+    private fun String.toFuriganaSentence() =
+        split(JAPANESE_WORD_LIST_DELIMITER).map { wordWithInfo ->
+            val hiraganaForm = wordWithInfo.hiraganaForm()
+            val originalForm = wordWithInfo.originalForm()
+
+            Word(originalForm, hiraganaForm)
+        }
+
+    /**
+     * Given a B line return the plain form of all verified words
+     */
+    private fun String.verifiedWords() =
+        split(JAPANESE_WORD_LIST_DELIMITER).filter { wordWithInfo ->
+            wordWithInfo.contains(VERIFIED_MARKER_REGEX)
+        }.map { wordWithInfo ->
+            wordWithInfo.originalForm()
+        }
+
+    private fun String.hiraganaForm() = HIRAGANA_FORM_REGEX.find(this)?.value
+        ?.trim(*HIRAGANA_FORM_PARENTHESIS.toCharArray())
+
+    private fun String.originalForm() = this
+        .delete(SENSE_MARKER_REGEX, SENTENCE_FORM_REGEX, HIRAGANA_FORM_REGEX, VERIFIED_MARKER_REGEX)
+
+    private fun MutableMap<String, MutableList<Sentence>>.addEntry(key: String, value: Sentence) =
+        getOrPut(key) { mutableListOf() }.add(value)
 
     private fun String.delete(vararg regex: Regex): String {
         var result = this
@@ -89,4 +95,7 @@ class TatoebaSentences(
     }
 
     private fun String.deleteFirst(string: String) = replaceFirst(string, "")
+
+    fun sentencesForWord(japaneseWord: String) =
+        verifiedWordMapping[japaneseWord]?.toList()
 }
