@@ -9,6 +9,7 @@ import jmdict.datatypes.Referrable
 import jmdict.datatypes.SenseElement
 import jmdict.enums.DialectEnum
 import jmdict.enums.FieldEnum
+import jmdict.enums.MiscellaneousEnum
 import jmdict.enums.PartOfSpeechEnum
 import xmlreader.Tag
 
@@ -60,7 +61,7 @@ object Sense {
         element.childrenWithTagName(FIELD).map { FieldEnum.from(it.text()) }
 
     private fun misc(element: Tag) =
-        element.childrenWithTagName(MISC).map { it.text() }.ifEmpty { null }
+        element.childrenWithTagName(MISC).map { MiscellaneousEnum.from(it.text()) }.ifEmpty { null }
 
     private fun sourceLanguage(element: Tag) =
         element.childrenWithTagName(LANGUAGE_SOURCE).map { SourceLanguage.parse(it) }

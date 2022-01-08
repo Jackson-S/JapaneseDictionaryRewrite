@@ -2,6 +2,7 @@ package jmdict.datatypes
 
 import jmdict.enums.DialectEnum
 import jmdict.enums.FieldEnum
+import jmdict.enums.MiscellaneousEnum
 import jmdict.enums.PartOfSpeechEnum
 
 /**
@@ -61,7 +62,7 @@ data class SenseElement(
      * the entry/sense. As with part-of-speech, information will usually
      * apply to several senses.
      */
-    val misc: List<String>?,
+    val misc: List<MiscellaneousEnum>?,
 
     /**
      * This element records the information about the source
