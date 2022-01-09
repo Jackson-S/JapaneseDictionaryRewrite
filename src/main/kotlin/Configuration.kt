@@ -13,7 +13,14 @@ object Configuration {
 
     /* Output Configuration */
     const val OUTPUT_DIRECTORY = "/Users/Jackson/Desktop/build"
+
+    // The output bundle name
     const val DICTIONARY_NAME = "Japanese-English Dictionary"
+
+    // The name displayed in Dictionary.app's menu bar
+    const val DISPLAY_NAME = "Japanese-English Dictionary"
+
+    // The path containing the Apple dictionary development kit files
     const val DICTIONARY_TOOLKIT_DIRECTORY = "/Users/jackson/Desktop/Dictionary Development Kit"
 
     // The output dictionary will be indented correctly. This can break the Apple compiler if the file is too
