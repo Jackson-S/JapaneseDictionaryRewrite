@@ -71,9 +71,7 @@ class DictionaryAppOutput(
         languages.forEach { language ->
             nonJapaneseHeadwords(entries, language).forEach { (foreignWord, entries) ->
                 val entryHtml = jmDictPageGenerator.englishEntry(foreignWord, entries)
-                val indexNode = outputDocument.createElement(INDEX_TAG)
-                indexNode.setAttribute(VALUE_ATTRIBUTE, foreignWord)
-                indexNode.setAttribute(TITLE_ATTRIBUTE, foreignWord)
+                val indexNode = outputDocument.createIndex(foreignWord)
 
                 val entryNode = outputDocument.createElement(ENTRY_TAG)
                 entryNode.setAttribute(TITLE_ATTRIBUTE, foreignWord)
@@ -98,8 +96,8 @@ class DictionaryAppOutput(
             if (!readingElement.noKanji) {
                 readingElement.element.flatMap { reading ->
                     listOf(
-                        document.createIndex(entry.headWord, entry.headWord, reading),
-                        document.createIndex(reading, entry.headWord)
+                        document.createIndex(entry.headWord, null, reading),
+                        document.createIndex(entry.headWord, reading)
                     )
                 }
             } else {
@@ -129,10 +127,10 @@ class DictionaryAppOutput(
         return result
     }
 
-    private fun Document.createIndex(title: String, value: String, yomi: String? = null): Element {
+    private fun Document.createIndex(value: String, title: String? = null, yomi: String? = null): Element {
         val index = createElement(INDEX_TAG)
-        index.setAttribute(TITLE_ATTRIBUTE, title)
         index.setAttribute(VALUE_ATTRIBUTE, value)
+        title?.let { index.setAttribute(TITLE_ATTRIBUTE, it) }
         yomi?.let { index.setAttribute(YOMI_ATTRIBUTE, it) }
         return index
     }
