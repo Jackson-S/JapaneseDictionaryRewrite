@@ -3,6 +3,7 @@ package output.dictionaryapp.templates
 import common.Entry
 import common.Language
 import jmdict.datatypes.EntryElement
+import jmdict.datatypes.SenseElement
 import jmdict.enums.BasePartOfSpeechEnum
 import jmdict.enums.InformationEnum
 import kotlinx.html.BODY
@@ -157,7 +158,13 @@ class JMDictPage(
                         p(Stylesheet.ENTRY_NUMBER) { +(index + 1).toString() }
 
                         div(Stylesheet.TRANSLATION_BLOCK) {
-                            +entry.headWord
+                            +entry.first.headWord
+                        }
+
+                        div(Stylesheet.BADGE_BOX) {
+                            entry.second.information?.forEach { information ->
+                                div(Stylesheet.BADGE) { +information }
+                            }
                         }
                     }
                 }
@@ -165,15 +172,17 @@ class JMDictPage(
         }
     }
 
-    private fun groupByBasePartOfSpeech(entries: List<EntryElement>): Map<BasePartOfSpeechEnum, List<Entry>> {
-        val result = mutableMapOf<BasePartOfSpeechEnum, MutableList<Entry>>()
+    private fun groupByBasePartOfSpeech(
+        entries: List<EntryElement>
+    ): Map<BasePartOfSpeechEnum, List<Pair<EntryElement, SenseElement>>> {
+        val result = mutableMapOf<BasePartOfSpeechEnum, MutableList<Pair<EntryElement, SenseElement>>>()
         entries.forEach { entry ->
             entry.senseElement.forEach { sense ->
                 sense.partOfSpeech?.map { partOfSpeech ->
                     partOfSpeech.basePartOfSpeech
                 }?.filterNotNull()?.toSet()?.forEach { basePartOfSpeech ->
-                    if (!(result[basePartOfSpeech]?.contains(entry) ?: false))
-                        result.getOrPut(basePartOfSpeech) { mutableListOf() }.add(entry)
+                    if (!(result[basePartOfSpeech]?.map{ it.first }?.contains(entry) ?: false))
+                        result.getOrPut(basePartOfSpeech) { mutableListOf() }.add(Pair(entry, sense))
                 }
             }
         }
