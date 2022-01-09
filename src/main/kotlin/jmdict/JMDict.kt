@@ -1,8 +1,8 @@
 package jmdict
 
+import Configuration
 import common.Language
 import jmdict.datatypes.EntryElement
-import jmdict.datatypes.SenseElement
 import jmdict.parsers.Entry
 import jmdict.parsers.Reading
 import jmdict.parsers.Sense
@@ -41,32 +41,8 @@ class JMDict(
 
     fun entry(headWord: String) = entryByHeadWord[headWord]
 
-    fun entries() = entryByHeadWord.keys
-
     private fun getBaseWord(word: String) =
         word.replace("\\([^)]*\\)".toRegex(), "")
-
-    fun nonJapaneseHeadwords(language: Language): Map<String, List<SenseElement>> {
-        val result = mutableMapOf<String, MutableList<SenseElement>>()
-
-        entries.forEach { entry ->
-            entry.senseElement.forEach { sense ->
-                for (gloss in sense.gloss ?: listOf()) {
-                    if (gloss.language != language) continue
-                    if (gloss.element.length > 32) continue
-                    val baseWord = getBaseWord(gloss.element)
-                    if (baseWord.isBlank()) continue
-                    if (result.containsKey(baseWord)) {
-                        result[baseWord]!!.add(sense)
-                    } else {
-                        result[baseWord] = mutableListOf(sense)
-                    }
-                }
-            }
-        }
-
-        return result
-    }
 
     private fun postProcess(entry: EntryElement, dictionary: JMDict) {
         Reading.postProcess(entry)

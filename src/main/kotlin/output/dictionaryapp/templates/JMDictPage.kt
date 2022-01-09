@@ -1,9 +1,12 @@
 package output.dictionaryapp.templates
 
+import common.Entry
 import common.Language
 import jmdict.datatypes.EntryElement
+import jmdict.enums.BasePartOfSpeechEnum
 import jmdict.enums.InformationEnum
 import jmdict.enums.ReadingInformationEnum
+import jmdict.parsers.Sense
 import kotlinx.html.BODY
 import kotlinx.html.P
 import kotlinx.html.SECTION
@@ -35,6 +38,12 @@ class JMDictPage(
             if (!entry.headReading.isNullOrBlank()) {
                 h1(Stylesheet.PRIMARY_READING) { +entry.headReading!! }
             }
+        }
+    }
+
+    private fun BODY.title(word: String) {
+        section(Stylesheet.HEADER) {
+            h1(Stylesheet.PAGE_TITLE) { +word }
         }
     }
 
@@ -136,6 +145,39 @@ class JMDictPage(
         }
     }
 
+    private fun BODY.definitions(entries: List<EntryElement>) {
+        val groupedTypes = mutableMapOf<BasePartOfSpeechEnum, MutableList<Entry>>()
+
+        entries.forEach { entry ->
+            entry.senseElement.forEach { sense ->
+                sense.partOfSpeech?.map { partOfSpeech ->
+                    partOfSpeech.basePartOfSpeech
+                }?.filterNotNull()?.toSet()?.forEach { basePartOfSpeech ->
+                    if (!(groupedTypes[basePartOfSpeech]?.contains(entry) ?: false))
+                        groupedTypes.getOrPut(basePartOfSpeech) { mutableListOf() }.add(entry)
+                }
+            }
+        }
+
+        section(Stylesheet.DEFINITIONS) {
+            h3(Stylesheet.SECTION_HEADING) { +"Definitions" }
+
+            groupedTypes.forEach { (type, entries) ->
+                h3(Stylesheet.SECTION_HEADING) { +type.name }
+
+                entries.forEachIndexed { index, entry ->
+                    article(Stylesheet.TRANSLATION_LINE) {
+                        p(Stylesheet.ENTRY_NUMBER) { +(index + 1).toString() }
+
+                        div(Stylesheet.TRANSLATION_BLOCK) {
+                            +entry.headWord
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun EntryElement.kanaReadings() =
         readingElement.flatMap { reading ->
             reading.element.map { element ->
@@ -171,6 +213,14 @@ class JMDictPage(
                 }
 
                 definitions(entry, language)
+            }
+        }
+
+    fun englishEntry(foreignWord: String, entries: List<EntryElement>) =
+        document.create.html {
+            body {
+                title(foreignWord)
+                definitions(entries)
             }
         }
 }

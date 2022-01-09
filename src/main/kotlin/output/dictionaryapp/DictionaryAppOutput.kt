@@ -4,6 +4,8 @@ import common.Language
 import jmdict.JMDict
 import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import output.dictionaryapp.templates.JMDictPage
 import output.dictionaryapp.templates.Makefile
 import output.dictionaryapp.templates.PropertyList
@@ -58,14 +60,29 @@ class DictionaryAppOutput(
             entryNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
             entryNode.setAttribute(ID_ATTRIBUTE, "J${entry.entrySequence.toString(36)}")
 
-            val indexNode = outputDocument.createElement(INDEX_TAG)
-            indexNode.setAttribute(VALUE_ATTRIBUTE, entry.headWord)
-            indexNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
-            entry.headReading?.let { indexNode.setAttribute(YOMI_ATTRIBUTE, it) }
+            createIndicies(entry, outputDocument).forEach { index ->
+                entryNode.appendChild(index)
+            }
 
-            entryNode.appendChild(indexNode)
             entryNode.appendChild(entryHtml)
             documentRoot.appendChild(entryNode)
+        }
+
+        Configuration.LANGUAGE.forEach { language ->
+            nonJapaneseHeadwords(entries, language).forEach { (foreignWord, entries) ->
+                val entryHtml = jmDictPageGenerator.englishEntry(foreignWord, entries)
+                val indexNode = outputDocument.createElement(INDEX_TAG)
+                indexNode.setAttribute(VALUE_ATTRIBUTE, foreignWord)
+                indexNode.setAttribute(TITLE_ATTRIBUTE, foreignWord)
+
+                val entryNode = outputDocument.createElement(ENTRY_TAG)
+                entryNode.setAttribute(TITLE_ATTRIBUTE, foreignWord)
+                entryNode.setAttribute(ID_ATTRIBUTE, "F${language.code2}$foreignWord")
+
+                entryNode.appendChild(indexNode)
+                entryNode.appendChild(entryHtml)
+                documentRoot.appendChild(entryNode)
+            }
         }
     }
 
@@ -74,6 +91,35 @@ class DictionaryAppOutput(
         writeMakefile(outputDirectory)
         writePropertyList(outputDirectory)
         writeDictionary(outputDirectory)
+    }
+
+    private fun createIndicies(entry: EntryElement, document: Document) =
+        entry.readingElement.map {
+            val indexNode = document.createElement(INDEX_TAG)
+            indexNode.setAttribute(VALUE_ATTRIBUTE, entry.headWord)
+            indexNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
+            entry.headReading?.let { indexNode.setAttribute(YOMI_ATTRIBUTE, it) }
+            indexNode
+        }
+
+    private fun nonJapaneseHeadwords(entries: List<EntryElement>, language: Language): Map<String, List<EntryElement>> {
+        val result = mutableMapOf<String, MutableList<EntryElement>>()
+
+        entries.forEach { entry ->
+            entry.senseElement.forEach { sense ->
+                sense.gloss?.filter { gloss ->
+                    gloss.language == language
+                }?.map { gloss ->
+                    gloss.element.replace("\\(.*\\)", "")
+                }?.filter { baseWordOrPhrase ->
+                    baseWordOrPhrase.split(" ").size < 3
+                }?.forEach { word ->
+                    result.getOrPut(word) { mutableListOf() }.add(entry)
+                }
+            }
+        }
+
+        return result
     }
 
     private fun EntryElement.hasLanguage(languages: List<Language>) =

@@ -16,6 +16,7 @@ object Stylesheet {
     val TRANSLATION_LINE = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "m" else "translation_line"
     val TRANSLATION_BLOCK = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "n" else "translation_block"
     val BADGE_BOX = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "o" else "badge_box"
+    val PART_OF_SPEECH_HEADING = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "p" else "part_of_speech_heading"
 
     private val ELEMENT_STYLES = """
         d|entry {
