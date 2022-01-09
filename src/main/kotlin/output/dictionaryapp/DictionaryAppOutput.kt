@@ -5,6 +5,7 @@ import jmdict.JMDict
 import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
 import org.w3c.dom.Document
+import org.w3c.dom.Element
 import output.dictionaryapp.templates.JMDictPage
 import output.dictionaryapp.templates.Makefile
 import output.dictionaryapp.templates.PropertyList
@@ -92,16 +93,21 @@ class DictionaryAppOutput(
         writeDictionary(outputDirectory)
     }
 
-    private fun createIndices(entry: EntryElement, document: Document) =
-        entry.readingElement.flatMap { readingElement ->
-            readingElement.element.map { reading ->
-                val indexNode = document.createElement(INDEX_TAG)
-                indexNode.setAttribute(VALUE_ATTRIBUTE, entry.headWord)
-                indexNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
-                indexNode.setAttribute(YOMI_ATTRIBUTE, reading)
-                indexNode
+    private fun createIndices(entry: EntryElement, document: Document): List<Element> {
+        return entry.readingElement.flatMap { readingElement ->
+            if (!readingElement.noKanji) {
+                readingElement.element.flatMap { reading ->
+                    listOf(
+                        document.createIndex(entry.headWord, entry.headWord, reading),
+                        document.createIndex(reading, entry.headWord)
+                    )
+                }
+            } else {
+                // If this reading does not directly relate to the headword ignore it
+                listOf()
             }
         }
+    }
 
     private fun nonJapaneseHeadwords(entries: List<EntryElement>, language: Language): Map<String, List<EntryElement>> {
         val result = mutableMapOf<String, MutableList<EntryElement>>()
@@ -121,6 +127,14 @@ class DictionaryAppOutput(
         }
 
         return result
+    }
+
+    private fun Document.createIndex(title: String, value: String, yomi: String? = null): Element {
+        val index = createElement(INDEX_TAG)
+        index.setAttribute(TITLE_ATTRIBUTE, title)
+        index.setAttribute(VALUE_ATTRIBUTE, value)
+        yomi?.let { index.setAttribute(YOMI_ATTRIBUTE, it) }
+        return index
     }
 
     private fun EntryElement.hasLanguage(languages: List<Language>) =
