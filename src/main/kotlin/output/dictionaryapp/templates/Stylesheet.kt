@@ -126,7 +126,8 @@ object Stylesheet {
         
         .$TRANSLATION_BLOCK {
           flex-grow: 1;
-          display: inline;
+          display: flex;
+          flex-flow: wrap;
         }
         
         .$TRANSLATION {
