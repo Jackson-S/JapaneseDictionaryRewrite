@@ -59,7 +59,7 @@ class DictionaryAppOutput(
             entryNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
             entryNode.setAttribute(ID_ATTRIBUTE, "J${entry.entrySequence.toString(36)}")
 
-            createIndicies(entry, outputDocument).forEach { index ->
+            createIndices(entry, outputDocument).forEach { index ->
                 entryNode.appendChild(index)
             }
 
@@ -67,7 +67,7 @@ class DictionaryAppOutput(
             documentRoot.appendChild(entryNode)
         }
 
-        Configuration.LANGUAGE.forEach { language ->
+        languages.forEach { language ->
             nonJapaneseHeadwords(entries, language).forEach { (foreignWord, entries) ->
                 val entryHtml = jmDictPageGenerator.englishEntry(foreignWord, entries)
                 val indexNode = outputDocument.createElement(INDEX_TAG)
@@ -92,13 +92,15 @@ class DictionaryAppOutput(
         writeDictionary(outputDirectory)
     }
 
-    private fun createIndicies(entry: EntryElement, document: Document) =
-        entry.readingElement.map {
-            val indexNode = document.createElement(INDEX_TAG)
-            indexNode.setAttribute(VALUE_ATTRIBUTE, entry.headWord)
-            indexNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
-            entry.headReading?.let { indexNode.setAttribute(YOMI_ATTRIBUTE, it) }
-            indexNode
+    private fun createIndices(entry: EntryElement, document: Document) =
+        entry.readingElement.flatMap { readingElement ->
+            readingElement.element.map { reading ->
+                val indexNode = document.createElement(INDEX_TAG)
+                indexNode.setAttribute(VALUE_ATTRIBUTE, entry.headWord)
+                indexNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
+                indexNode.setAttribute(YOMI_ATTRIBUTE, reading)
+                indexNode
+            }
         }
 
     private fun nonJapaneseHeadwords(entries: List<EntryElement>, language: Language): Map<String, List<EntryElement>> {
