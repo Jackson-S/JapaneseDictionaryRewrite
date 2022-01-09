@@ -3,13 +3,20 @@ import common.Language
 object Configuration {
     /* Input Configuration */
     // The JMdict dictionary XML file, either the full dictinary or the english entries only will work
+    // Can be obtained from
+    // http://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project#CURRENT_VERSION_.26_DOWNLOAD
+    // (download JMdict.gz and extract then put the location below)
     const val JMDICT_LOCATION = "/Users/jackson/Desktop/japanese-dictionary/input/JMdict"
 
     // KanjiDict2 XML file
+    // Can be obtained from http://www.edrdg.org/wiki/index.php/KANJIDIC_Project#Introduction
+    // (download the UTF-8 version)
     const val KANJI_DICT_2_LOCATION = "/Users/jackson/Desktop/japanese-dictionary/input/kanjidic2.xml"
 
-    // Tatoeba Tanaka Corpus sentences. Ideally use the verified sentences (not sure if other files will work)
-    const val SENTENCE_LOCATION = "/Users/jackson/Desktop/japanese-dictionary/input/examples_s"
+    // Tatoeba Tanaka Corpus sentences.
+    // It can be obtained from here https://dict.longdo.com/about/hintcontents/tanakacorpus.html
+    // Download the complete version (UTF-8), or the subset and then convert it to UTF-8 before use
+    const val SENTENCE_LOCATION = "/Users/jackson/Desktop/japanese-dictionary/input/examples.utf"
 
     /* Output Configuration */
     const val OUTPUT_DIRECTORY = "/Users/Jackson/Desktop/build"
