@@ -6,6 +6,7 @@ import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
 import output.dictionaryapp.templates.JMDictPage
 import output.dictionaryapp.templates.Makefile
+import output.dictionaryapp.templates.PropertyList
 import output.dictionaryapp.templates.Stylesheet
 import sentences.TatoebaSentences
 import java.io.FileWriter
@@ -71,6 +72,7 @@ class DictionaryAppOutput(
     fun writeAll(outputDirectory: String) {
         writeStylesheet(outputDirectory)
         writeMakefile(outputDirectory)
+        writePropertyList(outputDirectory)
         writeDictionary(outputDirectory)
     }
 
@@ -99,6 +101,12 @@ class DictionaryAppOutput(
     private fun writeMakefile(outputDirectory: String) {
         val outputWriter = FileWriter("$outputDirectory/Makefile")
         outputWriter.write(Makefile.makefile())
+        outputWriter.close()
+    }
+
+    private fun writePropertyList(outputDirectory: String) {
+        val outputWriter = FileWriter("$outputDirectory/JapaneseDictionary.plist")
+        outputWriter.write(PropertyList.propertList())
         outputWriter.close()
     }
 }
