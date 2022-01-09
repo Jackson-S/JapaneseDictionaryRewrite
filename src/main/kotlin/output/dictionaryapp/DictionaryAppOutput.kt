@@ -5,7 +5,6 @@ import jmdict.JMDict
 import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
 import org.w3c.dom.Document
-import org.w3c.dom.Element
 import output.dictionaryapp.templates.JMDictPage
 import output.dictionaryapp.templates.Makefile
 import output.dictionaryapp.templates.PropertyList

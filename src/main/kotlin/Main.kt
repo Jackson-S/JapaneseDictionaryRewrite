@@ -28,10 +28,10 @@ fun main() {
 
     println(
         "Memory usage:\n\tBase: $baseMemory MB\n" +
-        "\tSentences: $sentencesMemory MB\n" +
-        "\tDictionary: $dictionaryMemory MB\n" +
-        "\tKanji Dictionary: $kanjiDictionaryMemory MB\n" +
-        "\tOutput: $outputMemory MB\n" +
-        "\tTotal: ${ResourceChecker.memoryUsage()} MB"
+            "\tSentences: $sentencesMemory MB\n" +
+            "\tDictionary: $dictionaryMemory MB\n" +
+            "\tKanji Dictionary: $kanjiDictionaryMemory MB\n" +
+            "\tOutput: $outputMemory MB\n" +
+            "\tTotal: ${ResourceChecker.memoryUsage()} MB"
     )
 }

@@ -5,8 +5,6 @@ import common.Language
 import jmdict.datatypes.EntryElement
 import jmdict.enums.BasePartOfSpeechEnum
 import jmdict.enums.InformationEnum
-import jmdict.enums.ReadingInformationEnum
-import jmdict.parsers.Sense
 import kotlinx.html.BODY
 import kotlinx.html.P
 import kotlinx.html.SECTION
@@ -146,24 +144,13 @@ class JMDictPage(
     }
 
     private fun BODY.definitions(entries: List<EntryElement>) {
-        val groupedTypes = mutableMapOf<BasePartOfSpeechEnum, MutableList<Entry>>()
-
-        entries.forEach { entry ->
-            entry.senseElement.forEach { sense ->
-                sense.partOfSpeech?.map { partOfSpeech ->
-                    partOfSpeech.basePartOfSpeech
-                }?.filterNotNull()?.toSet()?.forEach { basePartOfSpeech ->
-                    if (!(groupedTypes[basePartOfSpeech]?.contains(entry) ?: false))
-                        groupedTypes.getOrPut(basePartOfSpeech) { mutableListOf() }.add(entry)
-                }
-            }
-        }
+        val groupedTypes = groupByBasePartOfSpeech(entries)
 
         section(Stylesheet.DEFINITIONS) {
             h3(Stylesheet.SECTION_HEADING) { +"Definitions" }
 
             groupedTypes.forEach { (type, entries) ->
-                h3(Stylesheet.SECTION_HEADING) { +type.name }
+                h3(Stylesheet.SECTION_HEADING) { +EnumMapping.map(type).first }
 
                 entries.forEachIndexed { index, entry ->
                     article(Stylesheet.TRANSLATION_LINE) {
@@ -176,6 +163,22 @@ class JMDictPage(
                 }
             }
         }
+    }
+
+    private fun groupByBasePartOfSpeech(entries: List<EntryElement>): Map<BasePartOfSpeechEnum, List<Entry>> {
+        val result = mutableMapOf<BasePartOfSpeechEnum, MutableList<Entry>>()
+        entries.forEach { entry ->
+            entry.senseElement.forEach { sense ->
+                sense.partOfSpeech?.map { partOfSpeech ->
+                    partOfSpeech.basePartOfSpeech
+                }?.filterNotNull()?.toSet()?.forEach { basePartOfSpeech ->
+                    if (!(result[basePartOfSpeech]?.contains(entry) ?: false))
+                        result.getOrPut(basePartOfSpeech) { mutableListOf() }.add(entry)
+                }
+            }
+        }
+
+        return result
     }
 
     private fun EntryElement.kanaReadings() =

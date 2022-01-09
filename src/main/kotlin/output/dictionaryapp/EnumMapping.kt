@@ -1,5 +1,6 @@
 package output.dictionaryapp
 
+import jmdict.enums.BasePartOfSpeechEnum
 import jmdict.enums.DialectEnum
 import jmdict.enums.FieldEnum
 import jmdict.enums.InformationEnum
@@ -27,6 +28,8 @@ object EnumMapping {
     fun map(enum: PartOfSpeechEnum) = Pair(enum.name.titlecase(), enum.description)
 
     fun map(enum: ReadingInformationEnum) = Pair(enum.name.titlecase(), enum.description)
+
+    fun map(enum: BasePartOfSpeechEnum) = Pair(enum.name.titlecase(), null)
 
     fun map(enum: InformationEnum) = when (enum) {
         is DialectEnum -> map(enum)

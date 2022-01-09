@@ -4,7 +4,7 @@ enum class PartOfSpeechEnum(
     override val code: String,
     override val description: String,
     val basePartOfSpeech: BasePartOfSpeechEnum? = null
-    ) : InformationEnum {
+) : InformationEnum {
     ADJECTIVE_F("adj-f", "noun or verb acting prenominally", BasePartOfSpeechEnum.ADJECTIVE),
     ADJECTIVE_I("adj-i", "adjective (keiyoushi)", BasePartOfSpeechEnum.ADJECTIVE),
     ADJECTIVE_IX("adj-ix", "adjective (keiyoushi) - yoi/ii class", BasePartOfSpeechEnum.ADJECTIVE),
