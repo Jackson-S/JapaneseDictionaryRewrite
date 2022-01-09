@@ -116,15 +116,10 @@ class JMDictPage(
                     p(Stylesheet.ENTRY_NUMBER) { +(index + 1).toString() }
 
                     div(Stylesheet.TRANSLATION_BLOCK) {
-                        sense.gloss?.filter { gloss ->
+                        +sense.gloss!!.filter { gloss ->
                             language.contains(gloss.language)
-                        }?.forEachIndexed { index, gloss ->
-                            p(Stylesheet.TRANSLATION) {
-                                if (sense.gloss.isIndexOfFinalElement(index))
-                                    +gloss.element
-                                else
-                                    +"${gloss.element},"
-                            }
+                        }.joinToString(", ") { gloss ->
+                            gloss.element
                         }
                     }
 

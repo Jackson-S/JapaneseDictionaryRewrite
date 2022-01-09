@@ -15,8 +15,7 @@ object Stylesheet {
     val ENTRY_NUMBER = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "l" else "entry_number"
     val TRANSLATION_LINE = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "m" else "translation_line"
     val TRANSLATION_BLOCK = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "n" else "translation_block"
-    val TRANSLATION = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "o" else "translation"
-    val BADGE_BOX = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "p" else "badge_box"
+    val BADGE_BOX = if (Configuration.SIMPLIFY_TAG_CLASS_NAMES) "o" else "badge_box"
 
     private val ELEMENT_STYLES = """
         d|entry {
@@ -128,10 +127,6 @@ object Stylesheet {
           flex-grow: 1;
           display: flex;
           flex-flow: wrap;
-        }
-        
-        .$TRANSLATION {
-          display: inline;
         }
         
         .$BADGE_BOX {
