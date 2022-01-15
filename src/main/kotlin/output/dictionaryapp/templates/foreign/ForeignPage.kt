@@ -1,5 +1,6 @@
 package output.dictionaryapp.templates.foreign
 
+import common.Language
 import jmdict.datatypes.EntryElement
 import kotlinx.html.body
 import kotlinx.html.dom.create
@@ -12,12 +13,13 @@ import output.dictionaryapp.templates.foreign.Title.title
 class ForeignPage(
     document: Document,
     word: String,
+    language: Language,
     entries: List<EntryElement>
 ) : Page {
     override val page = document.create.html {
         body {
             title(word)
-            definitions(word, entries)
+            definitions(word, language, entries)
         }
     }
 }

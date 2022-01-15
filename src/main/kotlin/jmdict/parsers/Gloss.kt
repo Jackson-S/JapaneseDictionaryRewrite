@@ -2,6 +2,8 @@ package jmdict.parsers
 
 import common.Language
 import jmdict.datatypes.GlossElement
+import jmdict.enums.GlossType
+import jmdict.exceptions.MissingEnumException
 import xmlreader.Tag
 
 object Gloss {
@@ -27,8 +29,14 @@ object Gloss {
     private fun gender(element: Tag) =
         element.properties()[Attribute.GENDER]
 
-    private fun type(element: Tag) =
-        element.properties()[Attribute.TYPE]
+    private fun type(element: Tag) = when (val name = element.properties()[Attribute.TYPE]) {
+        null -> GlossType.OTHER
+        "lit" -> GlossType.LITERAL
+        "fig" -> GlossType.FIGURATIVE
+        "expl" -> GlossType.EXPLANATION
+        "tm" -> GlossType.TRADEMARK
+        else -> throw MissingEnumException(name)
+    }
 
     private fun text(element: Tag) =
         element.text()

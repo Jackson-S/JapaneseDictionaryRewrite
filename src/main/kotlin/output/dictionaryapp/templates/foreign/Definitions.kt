@@ -1,5 +1,6 @@
 package output.dictionaryapp.templates.foreign
 
+import common.Language
 import jmdict.datatypes.EntryElement
 import jmdict.datatypes.SenseElement
 import kotlinx.html.BODY
@@ -18,8 +19,8 @@ internal object Definitions {
         val contextWords: List<String>
     )
 
-    fun BODY.definitions(word: String, entries: List<EntryElement>) {
-        val filteredSenses = filterSenses(word, entries)
+    fun BODY.definitions(word: String, language: Language, entries: List<EntryElement>) {
+        val filteredSenses = filterSenses(word, language, entries)
         val translationList = createTranslationObjects(filteredSenses)
         val groupedTranslationList = translationList.groupBy { it.contextWords }.map { it.value }
 
@@ -47,10 +48,12 @@ internal object Definitions {
         }
     }
 
-    private fun filterSenses(word: String, entries: List<EntryElement>) =
+    private fun filterSenses(word: String, language: Language, entries: List<EntryElement>) =
         entries.map { entry ->
             val senses = entry.senseElement.filter { sense ->
-                sense.gloss?.any { it.element == word } ?: false
+                sense.gloss?.any {
+                    it.element == word && it.language == language
+                } ?: false
             }
 
             Pair(entry, senses)

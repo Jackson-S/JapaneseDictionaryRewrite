@@ -1,6 +1,7 @@
 package jmdict.datatypes
 
 import common.Language
+import jmdict.enums.GlossType
 
 data class GlossElement(
     val element: String,
@@ -24,7 +25,7 @@ data class GlossElement(
      * The g_type attribute specifies that the gloss is of a particular
      * type, e.g. "lit" (literal), "fig" (figurative), "expl" (explanation).
      */
-    val type: String?,
+    val type: GlossType,
 
     /**
      * These elements highlight particular target-language words which

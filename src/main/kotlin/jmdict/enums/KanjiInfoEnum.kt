@@ -1,5 +1,7 @@
 package jmdict.enums
 
+import jmdict.exceptions.MissingEnumException
+
 enum class KanjiInfoEnum(override val code: String, override val description: String) : InformationEnum {
     ATEJI("ateji", "ateji (phonetic) reading"),
     IRREGULAR_KANA("ik", "word containing irregular kana usage"),
@@ -12,7 +14,7 @@ enum class KanjiInfoEnum(override val code: String, override val description: St
         fun from(value: String) = try {
             values().first { it.code == value || it.description == value }
         } catch (e: NoSuchElementException) {
-            throw NoSuchElementException(e.message + " $value", e.cause)
+            throw MissingEnumException(value)
         }
     }
 }

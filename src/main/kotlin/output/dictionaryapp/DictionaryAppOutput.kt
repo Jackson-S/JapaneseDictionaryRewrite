@@ -4,6 +4,7 @@ import Configuration
 import common.Language
 import jmdict.JMDict
 import jmdict.datatypes.EntryElement
+import jmdict.enums.GlossType
 import kanjidic.KanjiDic2
 import org.w3c.dom.Document
 import org.w3c.dom.Element
@@ -75,7 +76,7 @@ class DictionaryAppOutput(
 
         languages.forEach { language ->
             nonJapaneseHeadwords(entries, language).forEachIndexed { index, (foreignWord, entries) ->
-                val entryHtml = ForeignPage(outputDocument, foreignWord, entries).page
+                val entryHtml = ForeignPage(outputDocument, foreignWord, language, entries).page
                 val indexNode = outputDocument.createIndex(foreignWord)
                 val entryNode = outputDocument.createElement(
                     ENTRY_TAG,
@@ -123,11 +124,9 @@ class DictionaryAppOutput(
         entries.forEach { entry ->
             entry.senseElement.forEach { sense ->
                 sense.gloss?.filter { gloss ->
-                    gloss.language == language
+                    gloss.language == language && gloss.type == GlossType.OTHER
                 }?.map { gloss ->
-                    gloss.element.replace("\\(.*\\)", "")
-                }?.filter { baseWordOrPhrase ->
-                    baseWordOrPhrase.split(" ").size < 3
+                    gloss.element
                 }?.forEach { word ->
                     result.getOrPut(word) { mutableListOf() }.add(entry)
                 }

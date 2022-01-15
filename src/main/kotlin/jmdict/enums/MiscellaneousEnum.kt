@@ -1,5 +1,7 @@
 package jmdict.enums
 
+import jmdict.exceptions.MissingEnumException
+
 enum class MiscellaneousEnum(override val code: String, override val description: String) : InformationEnum {
     ABBREVIATION("abbr", "abbreviation"),
     ARCHAISM("arch", "archaism"),
@@ -60,7 +62,7 @@ enum class MiscellaneousEnum(override val code: String, override val description
         fun from(value: String) = try {
             values().first { it.code == value || it.description == value }
         } catch (e: NoSuchElementException) {
-            throw NoSuchElementException(e.message + " $value", e.cause)
+            throw MissingEnumException(value)
         }
     }
 }

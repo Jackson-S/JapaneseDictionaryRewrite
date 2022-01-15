@@ -8,6 +8,7 @@ import jmdict.enums.KanjiInfoEnum
 import jmdict.enums.MiscellaneousEnum
 import jmdict.enums.PartOfSpeechEnum
 import jmdict.enums.ReadingInformationEnum
+import output.dictionaryapp.exceptions.MissingEnumConversion
 
 object EnumMapping {
     fun map(enum: DialectEnum) = Pair(enum.description, null)
@@ -38,7 +39,7 @@ object EnumMapping {
         is PartOfSpeechEnum -> map(enum)
         is ReadingInformationEnum -> map(enum)
         is KanjiInfoEnum -> map(enum)
-        else -> TODO("Enum type not implemented")
+        else -> MissingEnumConversion(enum)
     }
 
     private fun String.titlecase() =

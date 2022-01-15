@@ -1,7 +1,5 @@
 package kanjidic.datatypes
 
-import common.Entry
-
 // literal,codepoint, radical, misc, dic_number?, query_code?, reading_meaning?
 
 data class CharacterElement(
@@ -36,7 +34,4 @@ data class CharacterElement(
      * Japanese readings that are now only associated with names.
      */
     val nanori: List<String>?
-) : Entry {
-    override val headWord: String
-        get() = literal
-}
+)
