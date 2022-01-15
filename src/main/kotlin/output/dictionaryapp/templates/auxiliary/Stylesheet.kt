@@ -1,12 +1,9 @@
 package output.dictionaryapp.templates.auxiliary
 
 import output.dictionaryapp.templates.HtmlClass.BADGE_BOX
-import output.dictionaryapp.templates.HtmlClass.BADGE_DIALECT
-import output.dictionaryapp.templates.HtmlClass.FIELD_INFORMATION
-import output.dictionaryapp.templates.HtmlClass.BADGE_MISC
 import output.dictionaryapp.templates.HtmlClass.CONTEXT
 import output.dictionaryapp.templates.HtmlClass.DEFINITIONS
-import output.dictionaryapp.templates.HtmlClass.ENTRY_NUMBER
+import output.dictionaryapp.templates.HtmlClass.FIELD_INFORMATION
 import output.dictionaryapp.templates.HtmlClass.HEADER_READING
 import output.dictionaryapp.templates.HtmlClass.PART_OF_SPEECH_MARKER
 import output.dictionaryapp.templates.HtmlClass.SENSE_INFORMATION

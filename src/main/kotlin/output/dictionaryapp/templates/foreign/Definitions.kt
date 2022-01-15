@@ -22,7 +22,6 @@ internal object Definitions {
         val filteredSenses = filterSenses(word, entries)
         val translationList = createTranslationObjects(filteredSenses)
         val groupedTranslationList = translationList.groupBy { it.contextWords }.map { it.value }
-        println(translationList)
 
         section(HtmlClass.DEFINITIONS) {
             h3(HtmlClass.SECTION_HEADING) { +"Definitions" }

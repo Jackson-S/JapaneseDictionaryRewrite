@@ -4,11 +4,9 @@ import jmdict.datatypes.EntryElement
 import jmdict.enums.InformationEnum
 import kotlinx.html.BODY
 import kotlinx.html.DIV
-import kotlinx.html.SECTION
 import kotlinx.html.div
 import kotlinx.html.h3
 import kotlinx.html.p
-import kotlinx.html.section
 import output.dictionaryapp.templates.HtmlClass
 
 internal object SubHeader {
