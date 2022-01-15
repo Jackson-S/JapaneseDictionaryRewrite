@@ -1,4 +1,4 @@
-package output.dictionaryapp.templates
+package output.dictionaryapp.templates.auxiliary
 
 object Makefile {
     private val MAKEFILE_OPTIONS = """

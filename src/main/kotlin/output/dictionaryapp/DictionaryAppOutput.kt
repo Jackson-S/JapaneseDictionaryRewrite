@@ -1,15 +1,17 @@
 package output.dictionaryapp
 
+import Configuration
 import common.Language
 import jmdict.JMDict
 import jmdict.datatypes.EntryElement
 import kanjidic.KanjiDic2
 import org.w3c.dom.Document
 import org.w3c.dom.Element
-import output.dictionaryapp.templates.JMDictPage
-import output.dictionaryapp.templates.Makefile
-import output.dictionaryapp.templates.PropertyList
-import output.dictionaryapp.templates.Stylesheet
+import output.dictionaryapp.templates.auxiliary.Makefile
+import output.dictionaryapp.templates.auxiliary.PropertyList
+import output.dictionaryapp.templates.auxiliary.Stylesheet
+import output.dictionaryapp.templates.foreign.ForeignPage
+import output.dictionaryapp.templates.japanese.JapanesePage
 import sentences.TatoebaSentences
 import java.io.FileWriter
 import javax.xml.parsers.DocumentBuilderFactory
@@ -19,10 +21,10 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
 class DictionaryAppOutput(
-    val jmdict: JMDict,
-    val kanjiDic2: KanjiDic2,
-    val tatoeba: TatoebaSentences,
-    val languages: List<Language>
+    jmdict: JMDict,
+    kanjiDic2: KanjiDic2,
+    private val tatoeba: TatoebaSentences,
+    private val languages: List<Language>
 ) {
     private companion object {
         const val DICTIONARY_TAG = "d:dictionary"
@@ -41,8 +43,6 @@ class DictionaryAppOutput(
     private val documentRoot = outputDocument.createElementNS(XHTML_NAMESPACE_URI, DICTIONARY_TAG)
 
     init {
-        val jmDictPageGenerator = JMDictPage(outputDocument, languages)
-
         documentRoot.setAttribute("xmlns:d", DICTIONARY_NAMESPACE_URI)
 
         val entries = if (Configuration.DEBUG_OUTPUT)
@@ -54,11 +54,16 @@ class DictionaryAppOutput(
             it.hasLanguage(languages)
         }.forEach { entry ->
             val sentences = tatoeba.sentencesForWord(entry.headWord)
-            val entryHtml = jmDictPageGenerator.japaneseEntry(entry, sentences)
+            val entryHtml = JapanesePage(outputDocument, languages, entry, sentences).page
+            val entryNode = outputDocument.createElement(
+                ENTRY_TAG,
+                Pair(TITLE_ATTRIBUTE, entry.headWord),
+                Pair(ID_ATTRIBUTE, "${Language.JAPANESE.code2.uppercase()}${entry.entrySequence.toString(36)}")
+            )
 
-            val entryNode = outputDocument.createElement(ENTRY_TAG)
-            entryNode.setAttribute(TITLE_ATTRIBUTE, entry.headWord)
-            entryNode.setAttribute(ID_ATTRIBUTE, "J${entry.entrySequence.toString(36)}")
+            if (Configuration.DEBUG_OUTPUT && Configuration.DEBUG_OUTPUT_ENTRIES.contains(entry.headWord)) {
+                writePage(Configuration.OUTPUT_DIRECTORY, entry.headWord, entryHtml)
+            }
 
             createIndices(entry, outputDocument).forEach { index ->
                 entryNode.appendChild(index)
@@ -69,13 +74,18 @@ class DictionaryAppOutput(
         }
 
         languages.forEach { language ->
-            nonJapaneseHeadwords(entries, language).forEach { (foreignWord, entries) ->
-                val entryHtml = jmDictPageGenerator.englishEntry(foreignWord, entries)
+            nonJapaneseHeadwords(entries, language).forEachIndexed { index, (foreignWord, entries) ->
+                val entryHtml = ForeignPage(outputDocument, foreignWord, entries).page
                 val indexNode = outputDocument.createIndex(foreignWord)
+                val entryNode = outputDocument.createElement(
+                    ENTRY_TAG,
+                    Pair(TITLE_ATTRIBUTE, foreignWord),
+                    Pair(ID_ATTRIBUTE, "${language.code2.uppercase()}${index.toString(36)}")
+                )
 
-                val entryNode = outputDocument.createElement(ENTRY_TAG)
-                entryNode.setAttribute(TITLE_ATTRIBUTE, foreignWord)
-                entryNode.setAttribute(ID_ATTRIBUTE, "F${language.code2}$foreignWord")
+                if (Configuration.DEBUG_OUTPUT && Configuration.FOREIGN_DEBUG_OUTPUT_ENTRIES.contains(foreignWord)) {
+                    writePage(Configuration.OUTPUT_DIRECTORY, foreignWord, entryHtml)
+                }
 
                 entryNode.appendChild(indexNode)
                 entryNode.appendChild(entryHtml)
@@ -97,7 +107,7 @@ class DictionaryAppOutput(
                 readingElement.element.flatMap { reading ->
                     listOf(
                         document.createIndex(entry.headWord, null, reading),
-                        document.createIndex(entry.headWord, reading)
+                        document.createIndex(reading)
                     )
                 }
             } else {
@@ -107,7 +117,7 @@ class DictionaryAppOutput(
         }
     }
 
-    private fun nonJapaneseHeadwords(entries: List<EntryElement>, language: Language): Map<String, List<EntryElement>> {
+    private fun nonJapaneseHeadwords(entries: List<EntryElement>, language: Language): List<Pair<String, List<EntryElement>>> {
         val result = mutableMapOf<String, MutableList<EntryElement>>()
 
         entries.forEach { entry ->
@@ -124,15 +134,25 @@ class DictionaryAppOutput(
             }
         }
 
-        return result
+        return result.toList()
     }
 
     private fun Document.createIndex(value: String, title: String? = null, yomi: String? = null): Element {
-        val index = createElement(INDEX_TAG)
-        index.setAttribute(VALUE_ATTRIBUTE, value)
-        title?.let { index.setAttribute(TITLE_ATTRIBUTE, it) }
-        yomi?.let { index.setAttribute(YOMI_ATTRIBUTE, it) }
-        return index
+        val attributes = listOf(
+            Pair(VALUE_ATTRIBUTE, value),
+            title?.let { Pair(TITLE_ATTRIBUTE, it) },
+            yomi?.let { Pair(YOMI_ATTRIBUTE, yomi) }
+        ).filterNotNull().toTypedArray()
+
+        return createElement(INDEX_TAG, *attributes)
+    }
+
+    private fun Document.createElement(tagName: String, vararg attributes: Pair<String, String>): Element {
+        val element = createElement(tagName)
+        attributes.forEach { attribute ->
+            element.setAttribute(attribute.first, attribute.second)
+        }
+        return element
     }
 
     private fun EntryElement.hasLanguage(languages: List<Language>) =
@@ -141,6 +161,15 @@ class DictionaryAppOutput(
                 languages.contains(gloss.language)
             } ?: false
         }
+
+    private fun writePage(outputDirectory: String, word: String, page: Element) {
+        val outputWriter = FileWriter("$outputDirectory/$word.html")
+        val outputResult = StreamResult(outputWriter)
+        val transformer = TransformerFactory.newInstance().newTransformer()
+        transformer.setOutputProperty(OutputKeys.INDENT, if (Configuration.PRETTY_PRINT_OUTPUT) "yes" else "no")
+        transformer.transform(DOMSource(page), outputResult)
+        outputWriter.close()
+    }
 
     private fun writeDictionary(outputDirectory: String) {
         val outputWriter = FileWriter("$outputDirectory/JapaneseDictionary.xml")

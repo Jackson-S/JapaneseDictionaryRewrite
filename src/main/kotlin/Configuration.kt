@@ -22,10 +22,10 @@ object Configuration {
     const val OUTPUT_DIRECTORY = "/Users/Jackson/Desktop/build"
 
     // The output bundle name
-    const val DICTIONARY_NAME = "Japanese-English Dictionary"
+    const val DICTIONARY_NAME = "Japanese-English Dictionary WIP"
 
     // The name displayed in Dictionary.app's menu bar
-    const val DISPLAY_NAME = "Japanese-English Dictionary"
+    const val DISPLAY_NAME = "Japanese-English Dictionary WIP"
 
     // The path containing the Apple dictionary development kit files
     const val DICTIONARY_TOOLKIT_DIRECTORY = "/Users/jackson/Desktop/Dictionary Development Kit"
@@ -35,13 +35,23 @@ object Configuration {
     const val PRETTY_PRINT_OUTPUT = true
 
     // Substitutes human readable element classes for single-letter names
-    const val SIMPLIFY_TAG_CLASS_NAMES = true
+    const val SIMPLIFY_TAG_CLASS_NAMES = false
 
     // Will only output the below subset of the dictionary for testing purposes
-    const val DEBUG_OUTPUT = false
+    const val DEBUG_OUTPUT = true
 
     // The entries to create when [DEBUG_OUTPUT] is enabled
-    val DEBUG_OUTPUT_ENTRIES = listOf("赤", "青", "緑")
+    val DEBUG_OUTPUT_ENTRIES = listOf(
+        "赤", "青", "緑", // Random words
+        "電子署名法", "外免", // Largest information
+        "拮抗作用", "線形", // Largest field
+        "出ず", "出る" // Largest gloss
+    )
+
+    // Foreign entries that will be output as HTML files in the output directory when [DEBUG_OUTPUT] is enabled
+    val FOREIGN_DEBUG_OUTPUT_ENTRIES = listOf(
+        "to attend"
+    )
 
     // The two and three letter language abbreviation to create a dictionary for
     val LANGUAGE = listOf(Language.ENGLISH)

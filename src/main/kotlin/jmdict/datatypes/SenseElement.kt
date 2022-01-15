@@ -55,7 +55,7 @@ data class SenseElement(
      * When absent, general application is implied. Entity coding for
      * specific fields of application.
      */
-    val field: List<FieldEnum>?,
+    val field: List<FieldEnum>,
 
     /**
      * This element is used for other relevant information about

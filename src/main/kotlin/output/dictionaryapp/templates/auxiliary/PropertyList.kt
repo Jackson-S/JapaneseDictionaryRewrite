@@ -1,4 +1,4 @@
-package output.dictionaryapp.templates
+package output.dictionaryapp.templates.auxiliary
 
 object PropertyList {
     private fun languages(): String {
