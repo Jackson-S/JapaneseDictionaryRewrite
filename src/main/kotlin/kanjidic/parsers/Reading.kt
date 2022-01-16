@@ -11,7 +11,7 @@ object Reading {
 
     fun parse(tag: Tag) =
         ReadingElement(
-            value = tag.text(),
+            element = tag.text(),
             readingType = ReadingTypeEnum.from(tag.properties()[READING_TYPE]!!),
             onType = tag.properties()[ON_TYPE],
             readingStatus = tag.properties()[READING_STATUS]

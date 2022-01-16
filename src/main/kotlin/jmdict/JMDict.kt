@@ -4,18 +4,18 @@ import jmdict.datatypes.EntryElement
 import jmdict.parsers.Entry
 import jmdict.parsers.Reading
 import jmdict.parsers.Sense
-import loader.Loader
+import dataabstraction.IOInterface
 import xmlreader.impl.TagImpl
 
 class JMDict(
-    loader: Loader
+    IOInterface: IOInterface
 ) {
     val entries: List<EntryElement>
     private val entryByIndex: MutableMap<Int, EntryElement> = mutableMapOf()
     private val entryByHeadWord: MutableMap<String, MutableList<EntryElement>> = mutableMapOf()
 
     init {
-        val root = TagImpl(loader, "JMdict")
+        val root = TagImpl(IOInterface, "JMdict")
 
         entries = root.children().map {
             Entry.parse(it)

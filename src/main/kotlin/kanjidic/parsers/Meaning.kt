@@ -9,7 +9,7 @@ object Meaning {
 
     fun parse(tag: Tag) =
         MeaningElement(
-            value = tag.text(),
+            element = tag.text(),
             language = tag.properties()[LANGUAGE]?.let { Language.fromCode(it) } ?: Language.ENGLISH
         )
 }

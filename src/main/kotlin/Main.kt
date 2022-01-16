@@ -1,16 +1,18 @@
 
 import jmdict.JMDict
 import kanjidic.KanjiDic2
-import loader.FileLoader
-import loader.NullLoader
-import output.dictionaryapp.DictionaryAppOutput
+import dataabstraction.FileIOInterface
+import dataabstraction.NullIOInterface
+import output.dictionary.KanjiOutput
+import output.common.OutputWriter
+import output.dictionary.DictionaryOutput
 import sentences.TatoebaSentences
 import kotlin.system.exitProcess
 
 fun main() {
     checkConfiguration()
 
-    println("Preparing to create ${Configuration.DISPLAY_NAME}")
+    println("Preparing to create ${Configuration.DICTIONARY_DISPLAY_NAME}")
     println("Output languages:\n\t${Configuration.LANGUAGE.joinToString("\n\t")}")
     println("Output directory: \"${Configuration.OUTPUT_DIRECTORY}\"")
 
@@ -18,11 +20,21 @@ fun main() {
     val jmDict = loadJmdict()
     val kanjiDic2 = loadKanjiDic()
 
-    println("Generating dictionary app output")
-    val dictionaryAppOutput = DictionaryAppOutput(jmDict, kanjiDic2, sentences, Configuration.LANGUAGE)
+    if (jmDict != null) {
+        println("Generating dictionary app output")
+        val dictionaryOutput = DictionaryOutput(jmDict, sentences, Configuration.LANGUAGE)
 
-    println("Writing dictionary app output to disk")
-    dictionaryAppOutput.writeAll(Configuration.OUTPUT_DIRECTORY)
+        println("Writing dictionary app output to disk")
+        OutputWriter().writeAll(Configuration.OUTPUT_DIRECTORY + "/dictionary", dictionaryOutput)
+    }
+
+    if (kanjiDic2 != null) {
+        println("Generating kanji dictionary app output")
+        val kanjiOutput = KanjiOutput(kanjiDic2, Configuration.LANGUAGE)
+
+        println("Writing kanji dictionary app output to disk")
+        OutputWriter().writeAll(Configuration.OUTPUT_DIRECTORY + "/kanji", kanjiOutput)
+    }
 }
 
 fun checkConfiguration() {
@@ -71,27 +83,27 @@ fun checkConfiguration() {
 
 fun loadSentences() =
     if (Configuration.SENTENCE_LOCATION.isBlank()) {
-        println("Tatoeba Tanaka Corpus sentence list not provided. Skipping.")
-        TatoebaSentences(NullLoader())
+        println("Skipping sentences (no file provided)")
+        TatoebaSentences(NullIOInterface())
     } else {
         println("Loading sentences")
-        TatoebaSentences(FileLoader(Configuration.SENTENCE_LOCATION))
+        TatoebaSentences(FileIOInterface(Configuration.SENTENCE_LOCATION))
     }
 
 fun loadJmdict() =
     if (Configuration.JMDICT_LOCATION.isBlank()) {
-        println("JMdict file path is not provided. Skipping.")
-        JMDict(NullLoader())
+        println("Skipping JMdict (no file provided)")
+        null
     } else {
         println("Loading JMdict")
-        JMDict(FileLoader(Configuration.JMDICT_LOCATION))
+        JMDict(FileIOInterface(Configuration.JMDICT_LOCATION))
     }
 
 fun loadKanjiDic() =
     if (Configuration.KANJI_DICT_2_LOCATION.isBlank()) {
-        println("KanjiDic2 file path is not provided, this is currently unused at this time so no worries. Skipping.")
-        KanjiDic2(NullLoader())
+        println("Skipping KanjiDic2 (no file provided)")
+        null
     } else {
         println("Loading KanjiDic2")
-        KanjiDic2(FileLoader(Configuration.KANJI_DICT_2_LOCATION))
+        KanjiDic2(FileIOInterface(Configuration.KANJI_DICT_2_LOCATION))
     }

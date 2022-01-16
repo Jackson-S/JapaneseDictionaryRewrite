@@ -1,6 +1,6 @@
 package xmlreader.impl
 
-import loader.Loader
+import dataabstraction.IOInterface
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
@@ -14,8 +14,8 @@ class TagImpl : Tag {
     private val root: Element
     private val parent: Tag?
 
-    constructor(loader: Loader, rootTag: String) {
-        val xmlFile = File(loader.path())
+    constructor(IOInterface: IOInterface, rootTag: String) {
+        val xmlFile = IOInterface.path().toFile()
         val xmlInput = InputSource(StringReader(xmlFile.readText()))
         val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xmlInput)
         root = document.getElementsByTagName(rootTag).first() as Element

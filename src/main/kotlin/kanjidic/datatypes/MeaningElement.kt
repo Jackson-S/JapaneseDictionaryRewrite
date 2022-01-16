@@ -6,7 +6,7 @@ data class MeaningElement(
     /**
      * The meaning associated with the kanji.
      */
-    val value: String,
+    val element: String,
 
     /**
      * The m_lang attribute defines the target language of the meaning. It

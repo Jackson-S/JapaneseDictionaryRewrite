@@ -1,11 +1,11 @@
 package sentences
 
-import loader.Loader
+import dataabstraction.IOInterface
 import sentences.datatypes.Sentence
 import sentences.datatypes.Word
 
 class TatoebaSentences(
-    loader: Loader
+    IOInterface: IOInterface
 ) {
     companion object {
         private const val SENTENCE_PAIR_PREFIX = "A: "
@@ -27,7 +27,7 @@ class TatoebaSentences(
     private val verifiedWordMapping: MutableMap<String, MutableList<Sentence>> = mutableMapOf()
 
     init {
-        val processedLines = loader.contentsAsText().split('\n').filter { !it.startsWith(COMMENT_PREFIX) }
+        val processedLines = IOInterface.readContents().split('\n').filter { !it.startsWith(COMMENT_PREFIX) }
 
         val sentenceLines = processedLines.filter { it.startsWith(SENTENCE_PAIR_PREFIX) }.map {
             it.deleteFirst(SENTENCE_PAIR_PREFIX)
