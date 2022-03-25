@@ -1,4 +1,3 @@
-
 import interfaces.FileIOInterface
 import interfaces.NullIOInterface
 import jmdict.JMDict
