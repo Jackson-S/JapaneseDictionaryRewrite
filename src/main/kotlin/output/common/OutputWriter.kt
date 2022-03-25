@@ -1,6 +1,6 @@
 package output.common
 
-import dataabstraction.FileIOInterface
+import interfaces.FileIOInterface
 import java.nio.file.InvalidPathException
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories

@@ -1,4 +1,4 @@
-package dataabstraction
+package interfaces
 
 import java.io.FileNotFoundException
 import java.io.OutputStreamWriter

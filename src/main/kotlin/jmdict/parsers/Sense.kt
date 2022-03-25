@@ -96,7 +96,7 @@ object Sense {
                     } else {
                         referencedEntry?.first()?.readingElement?.firstOrNull { it.element.contains(reference[1]) }
                     }
-                    3 -> referencedEntry?.firstOrNull { it.readingElement.any { it.element.contains(reference[1]) } }
+                    3 -> referencedEntry?.firstOrNull { entry -> entry.readingElement.any { it.element.contains(reference[1]) } }
                     else -> null
                 }
             }

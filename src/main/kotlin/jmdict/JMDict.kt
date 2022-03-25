@@ -1,10 +1,10 @@
 package jmdict
 
+import interfaces.IOInterface
 import jmdict.datatypes.EntryElement
 import jmdict.parsers.Entry
 import jmdict.parsers.Reading
 import jmdict.parsers.Sense
-import dataabstraction.IOInterface
 import xmlreader.impl.TagImpl
 
 class JMDict(

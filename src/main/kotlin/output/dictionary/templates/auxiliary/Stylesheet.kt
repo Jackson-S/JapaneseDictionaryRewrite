@@ -13,7 +13,7 @@ import output.dictionary.templates.HtmlClass.TRANSLATION
 import output.dictionary.templates.HtmlClass.TRANSLATION_BLOCK
 import output.dictionary.templates.HtmlClass.TRANSLATION_LINE
 
-object Stylesheet: OutputFile {
+object Stylesheet : OutputFile {
     private val BASE_STYLE = """
         @charset "UTF-8";
         

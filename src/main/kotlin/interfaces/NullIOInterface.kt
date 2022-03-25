@@ -1,4 +1,4 @@
-package dataabstraction
+package interfaces
 
 import java.nio.charset.Charset
 import kotlin.io.path.Path
@@ -9,7 +9,7 @@ import kotlin.io.path.Path
 class NullIOInterface : IOInterface {
     override fun readContents(encoding: Charset) = ""
 
-    override fun write(data: String, encoding: Charset) {  }
+    override fun write(data: String, encoding: Charset) { }
 
     override fun path() = Path("")
 }

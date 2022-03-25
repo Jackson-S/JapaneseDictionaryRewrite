@@ -1,6 +1,6 @@
 package output.dictionary.templates.auxiliary
 
-import dataabstraction.FileIOInterface
+import interfaces.FileIOInterface
 import output.common.OutputFile
 
 object Makefile : OutputFile {

@@ -2,7 +2,6 @@ package output.kanji.templates.kanji
 
 import common.Language
 import kanjidic.datatypes.ReadingMeaningElement
-import kanjidic.enums.ReadingTypeEnum
 import kotlinx.html.BODY
 import kotlinx.html.div
 import kotlinx.html.h3

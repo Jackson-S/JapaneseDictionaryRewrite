@@ -1,12 +1,11 @@
 package xmlreader.impl
 
-import dataabstraction.IOInterface
+import interfaces.IOInterface
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import xmlreader.Tag
-import java.io.File
 import java.io.StringReader
 import javax.xml.parsers.DocumentBuilderFactory
 

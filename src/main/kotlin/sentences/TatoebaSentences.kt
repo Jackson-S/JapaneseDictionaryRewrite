@@ -1,6 +1,6 @@
 package sentences
 
-import dataabstraction.IOInterface
+import interfaces.IOInterface
 import sentences.datatypes.Sentence
 import sentences.datatypes.Word
 

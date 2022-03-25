@@ -1,11 +1,11 @@
 
+import interfaces.FileIOInterface
+import interfaces.NullIOInterface
 import jmdict.JMDict
 import kanjidic.KanjiDic2
-import dataabstraction.FileIOInterface
-import dataabstraction.NullIOInterface
-import output.dictionary.KanjiOutput
 import output.common.OutputWriter
 import output.dictionary.DictionaryOutput
+import output.kanji.KanjiOutput
 import sentences.TatoebaSentences
 import kotlin.system.exitProcess
 

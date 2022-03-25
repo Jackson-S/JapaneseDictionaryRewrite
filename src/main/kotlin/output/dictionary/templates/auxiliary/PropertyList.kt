@@ -2,7 +2,7 @@ package output.dictionary.templates.auxiliary
 
 import output.common.OutputFile
 
-object PropertyList: OutputFile {
+object PropertyList : OutputFile {
     private fun languages(): String {
         val toLanguages = Configuration.LANGUAGE.map {
             """

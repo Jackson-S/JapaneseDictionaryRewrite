@@ -28,7 +28,7 @@ class DictionaryOutput(
     jmdict: JMDict,
     private val tatoeba: TatoebaSentences,
     private val languages: List<Language>
-): OutputFile, Output {
+) : OutputFile, Output {
     private companion object {
         const val DICTIONARY_TAG = "d:dictionary"
         const val ENTRY_TAG = "d:entry"
@@ -43,8 +43,8 @@ class DictionaryOutput(
 
     private val outputDocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
     private val outputDocument = outputDocumentBuilder.newDocument()
-    internal val documentRoot = outputDocument.createElementNS(XHTML_NAMESPACE_URI, DICTIONARY_TAG)
-    internal val debugOutputList = mutableListOf<Pair<String, Element>>()
+    private val documentRoot = outputDocument.createElementNS(XHTML_NAMESPACE_URI, DICTIONARY_TAG)
+    private val debugOutputList = mutableListOf<Pair<String, Element>>()
 
     init {
         documentRoot.setAttribute("xmlns:d", DICTIONARY_NAMESPACE_URI)
@@ -134,11 +134,11 @@ class DictionaryOutput(
     }
 
     private fun Document.createIndex(value: String, title: String? = null, yomi: String? = null): Element {
-        val attributes = listOf(
+        val attributes = listOfNotNull(
             Pair(VALUE_ATTRIBUTE, value),
             title?.let { Pair(TITLE_ATTRIBUTE, it) },
             yomi?.let { Pair(YOMI_ATTRIBUTE, yomi) }
-        ).filterNotNull().toTypedArray()
+        ).toTypedArray()
 
         return createElement(INDEX_TAG, *attributes)
     }
@@ -172,6 +172,6 @@ class DictionaryOutput(
     override fun outputFiles(): List<OutputFile> = when (Configuration.DEBUG_OUTPUT) {
         false -> listOf(Makefile, Preferences, PropertyList, Stylesheet, this)
         true -> listOf(Makefile, Preferences, PropertyList, Stylesheet, this) +
-                debugOutputList.map { (name, data) -> OutputFileImpl("$name.htm", null, data.toOutputString()) }
+            debugOutputList.map { (name, data) -> OutputFileImpl("$name.htm", null, data.toOutputString()) }
     }
 }

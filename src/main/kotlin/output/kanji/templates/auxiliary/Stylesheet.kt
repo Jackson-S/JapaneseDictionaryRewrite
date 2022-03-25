@@ -13,7 +13,7 @@ import output.kanji.templates.HtmlClass.TRANSLATION
 import output.kanji.templates.HtmlClass.TRANSLATION_BLOCK
 import output.kanji.templates.HtmlClass.TRANSLATION_LINE
 
-object Stylesheet: OutputFile {
+object Stylesheet : OutputFile {
     private val BASE_STYLE = """
         @charset "UTF-8";
         

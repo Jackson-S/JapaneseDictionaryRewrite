@@ -1,11 +1,11 @@
 package kanjidic
 
+import interfaces.IOInterface
+import interfaces.NullIOInterface
 import kanjidic.datatypes.CharacterElement
 import kanjidic.datatypes.HeaderElement
 import kanjidic.parsers.Character
 import kanjidic.parsers.Header
-import dataabstraction.IOInterface
-import dataabstraction.NullIOInterface
 import xmlreader.impl.TagImpl
 
 class KanjiDic2(

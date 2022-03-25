@@ -1,4 +1,4 @@
-package output.dictionary
+package output.kanji
 
 import Configuration
 import common.Language
@@ -24,7 +24,7 @@ import javax.xml.transform.stream.StreamResult
 class KanjiOutput(
     kanjiDic2: KanjiDic2,
     languages: List<Language>
-): OutputFile, Output {
+) : OutputFile, Output {
     private companion object {
         const val DICTIONARY_TAG = "d:dictionary"
         const val ENTRY_TAG = "d:entry"
@@ -64,7 +64,6 @@ class KanjiOutput(
 
             createIndicies(entry).forEach {
                 entryNode.appendChild(it)
-
             }
             entryNode.appendChild(entryHtml)
             documentRoot.appendChild(entryNode)
@@ -116,6 +115,6 @@ class KanjiOutput(
     override fun outputFiles(): List<OutputFile> = when (Configuration.DEBUG_OUTPUT) {
         false -> listOf(Makefile, Preferences, PropertyList, Stylesheet, this)
         true -> listOf(Makefile, Preferences, PropertyList, Stylesheet, this) +
-                debugOutputList.map { (name, data) -> OutputFileImpl("$name.htm", null, data.toOutputString()) }
+            debugOutputList.map { (name, data) -> OutputFileImpl("$name.htm", null, data.toOutputString()) }
     }
 }
